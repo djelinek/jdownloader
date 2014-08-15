@@ -8,6 +8,10 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+   compile 'org.codehaus.plexus:plexus-archiver:2.4.4'
+}
+
 jar {
 	manifest { attributes 'Main-Class': 'org.apodhrad.downloader.Demo' }
 }

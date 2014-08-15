@@ -16,6 +16,11 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
+import org.codehaus.plexus.archiver.AbstractUnArchiver;
+import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
+import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
+
 /**
  * Cache-Managed Downloader.
  * 
@@ -52,10 +57,14 @@ public class Downloader {
 	}
 
 	public static void download(String url) {
-		download(url, null);
+		download(url, false);
 	}
 
-	public static void download(String url, String dest) {
+	public static void download(String url, boolean unpack) {
+		download(url, null, false);
+	}
+
+	public static void download(String url, String dest, boolean unpack) {
 		String source = getSource();
 		String target = dest != null ? dest : TARGET_DEFAULT;
 		String name = getName(url);
@@ -65,23 +74,46 @@ public class Downloader {
 			return;
 		}
 		file = new File(source, name);
-		if (file.exists()) {
+		if (!file.exists()) {
+			try {
+				System.out.println("Downloading file '" + name + "' into " + source);
+				forceDownload(url, source);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (unpack) {
+			System.out.println("Unpacking file '" + name + "' into " + target);
+			unpack(new File(source, name), new File(target));
+		} else {
 			System.out.println("Copying file '" + name + "' into " + target);
 			try {
 				copy(file, new File(target, name));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return;
 		}
-		try {
-			System.out.println("Downloading file '" + name + "' into " + source);
-			forceDownload(url, source);
-			System.out.println("Copying file '" + name + "' into " + target);
-			copy(new File(source, name), new File(target, name));
-		} catch (IOException e) {
-			e.printStackTrace();
+	}
+
+	public static void unpack(File file, File target) {
+		target.mkdirs();
+
+		AbstractUnArchiver unarchiver = getUnArchiver(file);
+		unarchiver.enableLogging(new ConsoleLogger(org.codehaus.plexus.logging.Logger.LEVEL_INFO, "console"));
+		unarchiver.setSourceFile(file);
+		unarchiver.setDestDirectory(target);
+		unarchiver.extract();
+	}
+
+	protected static AbstractUnArchiver getUnArchiver(File file) {
+		String name = file.getName().toLowerCase();
+		if (name.endsWith(".zip")) {
+			return new ZipUnArchiver();
 		}
+		if (name.endsWith(".tar.gz")) {
+			return new TarGZipUnArchiver();
+		}
+		throw new IllegalArgumentException("Unsupported file format");
 	}
 
 	public static void copy(String source, String target) throws IOException {
