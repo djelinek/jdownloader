@@ -14,11 +14,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 /**
+ * Cache-Managed Downloader.
  * 
  * @author apodhrad
  *
@@ -32,42 +31,84 @@ public class Downloader {
 
 	public static final byte[] BUFFER = new byte[8192];
 
-	protected String target;
-	protected List<String> sources;
+	public static final String TARGET_DEFAULT = new File(System.getProperty("user.dir")).getAbsolutePath();
+	public static final String SOURCE_DEFAULT = new File(System.getProperty("user.home"), ".downloads")
+			.getAbsolutePath();
+	public static final String SOURCE_PROPERTY = "downloader.source";
 
-	public Downloader(String target, String... source) {
-		this.target = target;
-		if (source.length == 0) {
-			this.sources = Arrays.asList(target);
-		} else {
-			this.sources = Arrays.asList(source);
+	/**
+	 * Returns source absolute path from system property {@value #SOURCE_PROPERTY}. If the property doesn't exist then
+	 * the source is set to ~/.downloads. The source folder is automatically created.
+	 * 
+	 * @return source absolute path
+	 */
+	public static String getSource() {
+		String source = System.getProperty(SOURCE_PROPERTY, SOURCE_DEFAULT);
+		File sourceFile = new File(source);
+		if (!sourceFile.exists() && !sourceFile.mkdirs()) {
+			throw new RuntimeException("Cannot create " + source);
 		}
-	}
-	
-	public void addSource(String source) {
-		sources.add(source);
+		return source;
 	}
 
 	public void download(String url) {
+		download(url, null);
+	}
+
+	public void download(String url, String dest) {
+		String source = getSource();
+		String target = dest != null ? dest : TARGET_DEFAULT;
 		String name = getName(url);
 		File file = new File(target, name);
 		if (file.exists()) {
-			System.out.println("File '" + name + "' already exists");
+			System.out.println("File '" + name + "' already exists in " + target);
 			return;
 		}
-		System.out.println("Downloading file '" + name + "'");
+		file = new File(source, name);
+		if (file.exists()) {
+			System.out.println("Copying file '" + name + "' into " + target);
+			try {
+				copy(file, new File(target, name));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
 		try {
-			download(url, target);
+			System.out.println("Downloading file '" + name + "' into " + source);
+			forceDownload(url, source);
+			System.out.println("Copying file '" + name + "' into " + target);
+			copy(new File(source, name), new File(target, name));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void copyFile(File file, String target) {
-		throw new UnsupportedOperationException();
+	public static void copy(String source, String target) throws IOException {
+		copy(new File(source), new File(target));
 	}
 
-	public static void download(String url, String target) throws IOException {
+	public static void copy(File source, File target) throws IOException {
+		InputStream input = null;
+		OutputStream output = null;
+		try {
+			input = new FileInputStream(source);
+			output = new FileOutputStream(target);
+			int read;
+			while ((read = input.read(BUFFER)) > 0) {
+				output.write(BUFFER, 0, read);
+			}
+		} finally {
+			if (input != null) {
+				input.close();
+			}
+			if (output != null) {
+				output.close();
+			}
+		}
+	}
+
+	public static void forceDownload(String url, String target) throws IOException {
 		long lastTime = Calendar.getInstance().getTimeInMillis();
 
 		HttpURLConnection connection = null;
@@ -104,8 +145,6 @@ public class Downloader {
 				}
 			}
 			printStatus(count, totalSize, '\n');
-		} catch (IOException ioe) {
-			throw ioe;
 		} finally {
 			if (input != null) {
 				input.close();

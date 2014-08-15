@@ -31,4 +31,3 @@ uploadArchives.doFirst {
     logger.error "Cannot get console."
   }
 }
-
