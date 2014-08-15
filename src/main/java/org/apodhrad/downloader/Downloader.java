@@ -37,62 +37,69 @@ public class Downloader {
 	public static final byte[] BUFFER = new byte[8192];
 
 	public static final String TARGET_DEFAULT = new File(System.getProperty("user.dir")).getAbsolutePath();
-	public static final String SOURCE_DEFAULT = new File(System.getProperty("user.home"), ".downloads")
+	public static final String CACHE_DEFAULT = new File(System.getProperty("user.home"), ".downloads")
 			.getAbsolutePath();
-	public static final String SOURCE_PROPERTY = "downloader.source";
+	public static final String CACHE_PROPERTY = "downloader.source";
 
 	/**
-	 * Returns source absolute path from system property {@value #SOURCE_PROPERTY}. If the property doesn't exist then
-	 * the source is set to ~/.downloads. The source folder is automatically created.
+	 * Returns cache folder absolute path from system property {@value #CACHE_PROPERTY}. If the property doesn't exist
+	 * then the cache folder is set to ~/.downloads. The cache folder is automatically created.
 	 * 
-	 * @return source absolute path
+	 * @return cache folder absolute path
 	 */
-	public static String getSource() {
-		String source = System.getProperty(SOURCE_PROPERTY, SOURCE_DEFAULT);
-		File sourceFile = new File(source);
-		if (!sourceFile.exists() && !sourceFile.mkdirs()) {
-			throw new RuntimeException("Cannot create " + source);
+	public static String getCache() {
+		String cache = System.getProperty(CACHE_PROPERTY, CACHE_DEFAULT);
+		File cacheFile = new File(cache);
+		if (!cacheFile.exists() && !cacheFile.mkdirs()) {
+			throw new RuntimeException("Cannot create " + cache);
 		}
-		return source;
+		return cache;
 	}
 
 	public static void download(String url) {
 		download(url, false);
 	}
 
-	public static void download(String url, boolean unpack) {
-		download(url, null, false);
+	public static void download(String url, String dest) {
+		download(url, dest, getName(url), false);
 	}
 
-	public static void download(String url, String dest, boolean unpack) {
-		String source = getSource();
-		String target = dest != null ? dest : TARGET_DEFAULT;
+	public static void download(String url, boolean unpack) {
+		download(url, TARGET_DEFAULT, getName(url), false);
+	}
+
+	public static void download(String url, String target, String targetName, boolean unpack) {
+		String cache = getCache();
 		String name = getName(url);
 		File file = new File(target, name);
 		if (file.exists()) {
 			System.out.println("File '" + name + "' already exists in " + target);
 			return;
 		}
-		file = new File(source, name);
+		file = new File(cache, name);
 		if (!file.exists()) {
 			try {
-				System.out.println("Downloading file '" + name + "' into " + source);
-				forceDownload(url, source);
+				System.out.println("Downloading file '" + name + "' into " + cache);
+				downloadWithoutCache(url, cache);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		if (unpack) {
 			System.out.println("Unpacking file '" + name + "' into " + target);
-			unpack(new File(source, name), new File(target));
+			unpack(new File(cache, name), new File(target));
 		} else {
 			System.out.println("Copying file '" + name + "' into " + target);
 			try {
-				copy(file, new File(target, name));
+				copy(file, new File(target, targetName));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static void unpack(String file, String target) {
+		unpack(new File(file), new File(target));
 	}
 
 	public static void unpack(File file, File target) {
@@ -140,7 +147,11 @@ public class Downloader {
 		}
 	}
 
-	public static void forceDownload(String url, String target) throws IOException {
+	public static void downloadWithoutCache(String url, String target) throws IOException {
+		downloadWithoutCache(url, target, getName(url));
+	}
+	
+	public static void downloadWithoutCache(String url, String target, String targetName) throws IOException {
 		long lastTime = Calendar.getInstance().getTimeInMillis();
 
 		HttpURLConnection connection = null;
