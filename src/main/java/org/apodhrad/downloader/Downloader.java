@@ -51,11 +51,11 @@ public class Downloader {
 		return source;
 	}
 
-	public void download(String url) {
+	public static void download(String url) {
 		download(url, null);
 	}
 
-	public void download(String url, String dest) {
+	public static void download(String url, String dest) {
 		String source = getSource();
 		String target = dest != null ? dest : TARGET_DEFAULT;
 		String name = getName(url);
