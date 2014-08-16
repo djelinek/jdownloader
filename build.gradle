@@ -10,10 +10,16 @@ repositories {
 
 dependencies {
    compile 'org.codehaus.plexus:plexus-archiver:2.4.4'
+   testCompile 'junit:junit:4.11'
+   testCompile 'org.eclipse.jetty:jetty-server:9.2.2.v20140723'
 }
 
 jar {
 	manifest { attributes 'Main-Class': 'org.apodhrad.downloader.Demo' }
+}
+
+tasks.withType(Test) {
+     systemProperty 'jetty.resourceBase', projectDir.absolutePath + '/gradle/wrapper'
 }
 
 uploadArchives.doFirst {

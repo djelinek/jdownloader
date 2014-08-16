@@ -1,0 +1,78 @@
+package org.apodhrad.downloader;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.codehaus.plexus.archiver.AbstractUnArchiver;
+import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
+import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
+
+/**
+ * 
+ * @author apodhrad
+ *
+ */
+public class FileUtils extends org.codehaus.plexus.util.FileUtils {
+
+	public static final byte[] BUFFER = new byte[4 * ONE_KB];
+
+	public static void unpack(String file, String target) {
+		unpack(new File(file), new File(target));
+	}
+
+	public static void unpack(File file, File target) {
+		target.mkdirs();
+
+		AbstractUnArchiver unarchiver = getUnArchiver(file);
+		unarchiver.enableLogging(new ConsoleLogger(org.codehaus.plexus.logging.Logger.LEVEL_INFO, "console"));
+		unarchiver.setSourceFile(file);
+		unarchiver.setDestDirectory(target);
+		unarchiver.extract();
+	}
+
+	protected static AbstractUnArchiver getUnArchiver(File file) {
+		String name = file.getName().toLowerCase();
+		if (name.endsWith(".zip") || name.endsWith(".jar")) {
+			return new ZipUnArchiver();
+		}
+		if (name.endsWith(".tar.gz")) {
+			return new TarGZipUnArchiver();
+		}
+		throw new IllegalArgumentException("Unsupported file format");
+	}
+
+	public static void copy(String source, String target) throws IOException {
+		FileUtils.copyFileToDirectory(new File(source), new File(target));
+	}
+
+	public static void copy(String source, String target, String targetName) throws IOException {
+		FileUtils.copyFile(new File(source), new File(target, targetName));
+	}
+
+	public static String generateMD5(File file) throws NoSuchAlgorithmException, IOException {
+		MessageDigest digest = MessageDigest.getInstance("MD5");
+		InputStream is = null;
+		try {
+			is = new FileInputStream(file);
+			int read;
+			while ((read = is.read(BUFFER)) > 0) {
+				digest.update(BUFFER, 0, read);
+			}
+		} catch (IOException ioe) {
+			throw ioe;
+		} finally {
+			if (is != null) {
+				is.close();
+			}
+		}
+		byte[] md5sum = digest.digest();
+		BigInteger bigInt = new BigInteger(1, md5sum);
+		return String.format("%32s", bigInt.toString(16)).replace(' ', '0');
+	}
+}
