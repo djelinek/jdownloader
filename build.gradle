@@ -35,3 +35,7 @@ uploadArchives.doFirst {
     logger.error "Cannot get console."
   }
 }
+
+task createWrapper(type: Wrapper) {
+     gradleVersion = '2.0'
+}
