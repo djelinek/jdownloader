@@ -19,13 +19,15 @@ public class DownloadUtils {
 	public static final byte[] BUFFER = new byte[4 * 1024];
 
 	public static void download(String url, String target) throws IOException {
-		download(url, target, getName(target));
+		download(url, target, getName(url));
 	}
 
 	public static void download(String url, String target, String targetName) throws IOException {
-		new File(target).mkdirs();
+		FileUtils.createDir(target);
+
 		long lastTime = Calendar.getInstance().getTimeInMillis();
 
+		System.out.println("Downloading '" + url + "' to '" + new File(target, targetName).getAbsolutePath() + "'");
 		HttpURLConnection connection = null;
 		connection = (HttpURLConnection) new URL(url).openConnection();
 

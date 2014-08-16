@@ -27,8 +27,9 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 	}
 
 	public static void unpack(File file, File target) {
-		target.mkdirs();
+		createDir(target);
 
+		System.out.println("Unpacking file '" + file.getAbsolutePath() + "' to '" + target.getAbsolutePath() + "'");
 		AbstractUnArchiver unarchiver = getUnArchiver(file);
 		unarchiver.enableLogging(new ConsoleLogger(org.codehaus.plexus.logging.Logger.LEVEL_INFO, "console"));
 		unarchiver.setSourceFile(file);
@@ -48,10 +49,12 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 	}
 
 	public static void copy(String source, String target) throws IOException {
+		System.out.println("Copying file '" + source + "' to '" + target + "'");
 		FileUtils.copyFileToDirectory(new File(source), new File(target));
 	}
 
 	public static void copy(String source, String target, String targetName) throws IOException {
+		System.out.println("Copying file '" + source + "' to '" + new File(target, targetName).getAbsolutePath() + "'");
 		FileUtils.copyFile(new File(source), new File(target, targetName));
 	}
 
@@ -74,5 +77,15 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 		byte[] md5sum = digest.digest();
 		BigInteger bigInt = new BigInteger(1, md5sum);
 		return String.format("%32s", bigInt.toString(16)).replace(' ', '0');
+	}
+
+	public static void createDir(String dir) {
+		createDir(new File(dir));
+	}
+
+	public static void createDir(File dir) {
+		if (dir.mkdirs()) {
+			System.out.println("Creating dir '" + dir + "'");
+		}
 	}
 }

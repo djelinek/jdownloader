@@ -1,5 +1,6 @@
 apply plugin: "java"
 apply plugin: "maven"
+apply plugin: 'jacoco'
 
 group 'org.apodhrad.downloader'
 version '1.0.0-SNAPSHOT'
@@ -12,6 +13,7 @@ dependencies {
    compile 'org.codehaus.plexus:plexus-archiver:2.4.4'
    testCompile 'junit:junit:4.11'
    testCompile 'org.eclipse.jetty:jetty-server:9.2.2.v20140723'
+   testCompile 'com.github.stefanbirkner:system-rules:1.6.0'
 }
 
 jar {
@@ -44,4 +46,10 @@ uploadArchives.doFirst {
 
 task createWrapper(type: Wrapper) {
      gradleVersion = '2.0'
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
 }

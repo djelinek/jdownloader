@@ -99,17 +99,13 @@ public class Downloader {
 		if (cache != null) {
 			file = new File(cache, originalName);
 			if (!file.exists()) {
-				System.out.println("Downloading '" + url + "' into " + new File(cache, originalName).getAbsolutePath());
 				DownloadUtils.download(url, cache, originalName);
 			}
-			System.out.println("Copying file '" + originalName + "' into " + target);
 			FileUtils.copy(new File(cache, originalName).getAbsolutePath(), target, targetName);
 		} else {
-			System.out.println("Downloading '" + url + "' into " + target + "/" + targetName);
 			DownloadUtils.download(url, target, targetName);
 		}
 		if (unpack) {
-			System.out.println("Unpacking file '" + targetName + "' into " + target);
 			FileUtils.unpack(new File(target, targetName), new File(target));
 		}
 	}
