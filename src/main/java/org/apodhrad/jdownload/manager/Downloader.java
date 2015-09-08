@@ -1,4 +1,4 @@
-package org.apodhrad.downloader;
+package org.apodhrad.jdownload.manager;
 
 import java.io.File;
 import java.io.IOException;

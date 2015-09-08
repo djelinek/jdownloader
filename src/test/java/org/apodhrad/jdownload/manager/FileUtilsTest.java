@@ -1,4 +1,4 @@
-package org.apodhrad.downloader;
+package org.apodhrad.jdownload.manager;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
+import org.apodhrad.jdownload.manager.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

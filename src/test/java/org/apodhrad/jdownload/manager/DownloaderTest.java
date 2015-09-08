@@ -1,4 +1,4 @@
-package org.apodhrad.downloader;
+package org.apodhrad.jdownload.manager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,6 +9,9 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 
+import org.apodhrad.jdownload.manager.DownloadUtils;
+import org.apodhrad.jdownload.manager.Downloader;
+import org.apodhrad.jdownload.manager.FileUtils;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
