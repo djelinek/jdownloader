@@ -56,6 +56,10 @@ public class JDownloadManager {
 	}
 
 	public void download(String url, File target, String targetName, boolean unpack) throws IOException {
+		checkNotNull(url, "url");
+		checkNotNull(target, "target");
+		checkNotNull(targetName, "targetName");
+
 		File targetFile = new File(target, targetName);
 		if (targetFile.exists()) {
 			System.out.println("File '" + targetName + "' already exists in " + target);
@@ -79,7 +83,7 @@ public class JDownloadManager {
 	}
 
 	public static String getName(String url) {
-		String[] parser = url.split("/");
+		String[] parser = checkNotNull(url, "url").split("/");
 		return parser[parser.length - 1];
 	}
 
