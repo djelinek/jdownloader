@@ -33,7 +33,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void copyTest() throws Exception {
-		FileUtils.copy(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR);
+		FileUtils.copyFileToDirectory(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR);
 
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).isFile());
@@ -41,7 +41,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void copyWithSameNameTest() throws Exception {
-		FileUtils.copy(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR, TEST_RESOURCE);
+		FileUtils.copyFile(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), new File(TEST_DIR, TEST_RESOURCE));
 
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).isFile());
@@ -49,7 +49,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void copyWithDifferentNameTest() throws Exception {
-		FileUtils.copy(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR, "test.jar");
+		FileUtils.copyFile(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), new File(TEST_DIR, "test.jar"));
 
 		assertFalse(new File(TEST_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TEST_DIR, "test.jar").exists());

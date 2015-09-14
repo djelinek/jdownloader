@@ -24,18 +24,17 @@ public class DownloadUtilsTest {
 	private static final String JETTY_RESOURCE_BASE = System.getProperty("jetty.resourceBase");
 	private static final String TEST_RESOURCE = "gradle-wrapper.jar";
 	private static final String RESOURCE_DIR = DownloadUtilsTest.class.getResource("/").getPath();
-	private static final File CACHE_DIR = new java.io.File(RESOURCE_DIR, "cache");
-	private static final File TARGET_DIR = new java.io.File(RESOURCE_DIR, "target");
+	private static final File TARGET_DIR = new File(RESOURCE_DIR, "target");
 
 	private static Server server;
 
 	@BeforeClass
 	public static void startServer() throws Exception {
 		assertNotNull("Systemproperty jetty.resourceBase is not set", JETTY_RESOURCE_BASE);
-		if (!new java.io.File(JETTY_RESOURCE_BASE).exists()) {
+		if (!new File(JETTY_RESOURCE_BASE).exists()) {
 			fail("'" + JETTY_RESOURCE_BASE + "' doesn't exist");
 		}
-		if (!new java.io.File(JETTY_RESOURCE_BASE, TEST_RESOURCE).exists()) {
+		if (!new File(JETTY_RESOURCE_BASE, TEST_RESOURCE).exists()) {
 			fail("'" + TEST_RESOURCE + "' doesn't exist");
 		}
 		ResourceHandler resource_handler = new ResourceHandler();
@@ -56,22 +55,13 @@ public class DownloadUtilsTest {
 
 	@Before
 	@After
-	public void deleteCacheAndTarget() throws IOException {
-		FileUtils.deleteDirectory(CACHE_DIR);
+	public void deleteTargetDirectory() throws IOException {
 		FileUtils.deleteDirectory(TARGET_DIR);
 	}
 
 	@Test
-	public void downloadWithoutTargetNameTest() throws Exception {
-		DownloadUtils.download("http://localhost:8180/" + TEST_RESOURCE, TARGET_DIR);
-
-		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
-		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).isFile());
-	}
-
-	@Test
 	public void downloadWithSameTargetNameTest() throws Exception {
-		DownloadUtils.download("http://localhost:8180/" + TEST_RESOURCE, TARGET_DIR, TEST_RESOURCE);
+		DownloadUtils.download("http://localhost:8180/" + TEST_RESOURCE, new File(TARGET_DIR, TEST_RESOURCE));
 
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).isFile());
@@ -79,7 +69,7 @@ public class DownloadUtilsTest {
 
 	@Test
 	public void downloadWithDifferentTargetNameTest() throws Exception {
-		DownloadUtils.download("http://localhost:8180/" + TEST_RESOURCE, TARGET_DIR, "test.jar");
+		DownloadUtils.download("http://localhost:8180/" + TEST_RESOURCE, new File(TARGET_DIR, "test.jar"));
 
 		assertTrue(new File(TARGET_DIR, "test.jar").exists());
 		assertTrue(new File(TARGET_DIR, "test.jar").isFile());

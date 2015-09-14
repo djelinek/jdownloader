@@ -9,9 +9,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 
-import org.apodhrad.jdownload.manager.DownloadUtils;
-import org.apodhrad.jdownload.manager.JDownloadManager;
-import org.apodhrad.jdownload.manager.FileUtils;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -75,11 +72,8 @@ public class JDownloadManagerTest {
 
 	@Test
 	public void downloadTest() throws Exception {
-		JDownloadManager testResource = new JDownloadManager();
-		testResource.setUrl(JETTY_TEST_RESOURCE_URL);
-		testResource.setCache(CACHE_DIR);
-		testResource.setTarget(TARGET_DIR);
-		testResource.download();
+		JDownloadManager testResource = new JDownloadManager(CACHE_DIR);
+		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
 
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
@@ -88,20 +82,14 @@ public class JDownloadManagerTest {
 
 		String expectedOutput = "Downloading '" + JETTY_TEST_RESOURCE_URL + "' to '"
 				+ new File(CACHE_DIR, TEST_RESOURCE).getAbsolutePath() + "'\n"
-				+ "Downloaded      51348 /      51348 (100%)\n" + "Copying file '"
-				+ new File(CACHE_DIR, TEST_RESOURCE).getAbsolutePath() + "' to '"
-				+ new File(TARGET_DIR, TEST_RESOURCE).getAbsolutePath() + "'\n";
+				+ "Downloaded      51348 /      51348 (100%)\n";
 		assertEquals(expectedOutput, out.getLog());
 	}
 
 	@Test
 	public void downloadUnpackTest() throws Exception {
-		JDownloadManager testResource = new JDownloadManager();
-		testResource.setUrl(JETTY_TEST_RESOURCE_URL);
-		testResource.setCache(CACHE_DIR);
-		testResource.setTarget(TARGET_DIR);
-		testResource.setUnpack(true);
-		testResource.download();
+		JDownloadManager testResource = new JDownloadManager(CACHE_DIR);
+		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, true);
 
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
@@ -113,13 +101,10 @@ public class JDownloadManagerTest {
 
 	@Test
 	public void downloadTargetExistingResourceTest() throws Exception {
-		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
+		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, new File(TARGET_DIR, TEST_RESOURCE));
 
-		JDownloadManager testResource = new JDownloadManager();
-		testResource.setUrl(JETTY_TEST_RESOURCE_URL);
-		testResource.setCache(CACHE_DIR);
-		testResource.setTarget(TARGET_DIR);
-		testResource.download();
+		JDownloadManager testResource = new JDownloadManager(CACHE_DIR);
+		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
 
 		assertFalse(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
@@ -128,13 +113,10 @@ public class JDownloadManagerTest {
 
 	@Test
 	public void downloadCacheExistingResourceTest() throws Exception {
-		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, CACHE_DIR);
+		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, new File(CACHE_DIR, TEST_RESOURCE));
 
-		JDownloadManager testResource = new JDownloadManager();
-		testResource.setUrl(JETTY_TEST_RESOURCE_URL);
-		testResource.setCache(CACHE_DIR);
-		testResource.setTarget(TARGET_DIR);
-		testResource.download();
+		JDownloadManager testResource = new JDownloadManager(CACHE_DIR);
+		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
 
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
@@ -144,10 +126,8 @@ public class JDownloadManagerTest {
 
 	@Test
 	public void downloadWithoutCacheTest() throws Exception {
-		JDownloadManager testResource = new JDownloadManager();
-		testResource.setUrl(JETTY_TEST_RESOURCE_URL);
-		testResource.setTarget(TARGET_DIR);
-		testResource.download();
+		JDownloadManager testResource = new JDownloadManager(null);
+		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
 
 		assertFalse(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
@@ -156,11 +136,8 @@ public class JDownloadManagerTest {
 
 	@Test
 	public void downloadWithoutCacheUnpackTest() throws Exception {
-		JDownloadManager testResource = new JDownloadManager();
-		testResource.setUrl(JETTY_TEST_RESOURCE_URL);
-		testResource.setTarget(TARGET_DIR);
-		testResource.setUnpack(true);
-		testResource.download();
+		JDownloadManager testResource = new JDownloadManager(null);
+		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, true);
 
 		assertFalse(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
@@ -172,23 +149,6 @@ public class JDownloadManagerTest {
 	@Test
 	public void getNameTest() {
 		assertEquals(TEST_RESOURCE, JDownloadManager.getName(JETTY_TEST_RESOURCE_URL));
-	}
-
-	@Test
-	public void getTargetNameIfSetTest() {
-		JDownloadManager testResource = new JDownloadManager();
-		testResource.setUrl(JETTY_TEST_RESOURCE_URL);
-		testResource.setTargetName("test.jar");
-
-		assertEquals("test.jar", testResource.getTargetName());
-	}
-
-	@Test
-	public void getTargetNameIfNotSetTest() {
-		JDownloadManager testResource = new JDownloadManager();
-		testResource.setUrl(JETTY_TEST_RESOURCE_URL);
-
-		assertEquals(TEST_RESOURCE, testResource.getTargetName());
 	}
 
 }

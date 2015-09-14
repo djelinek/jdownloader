@@ -18,16 +18,12 @@ public class DownloadUtils {
 
 	public static final byte[] BUFFER = new byte[4 * 1024];
 
-	public static void download(String url, File target) throws IOException {
-		download(url, target, getName(url));
-	}
-
-	public static void download(String url, File target, String targetName) throws IOException {
-		FileUtils.createDir(target);
-
+	public static void download(String url, File targetFile) throws IOException {
+		FileUtils.createDir(targetFile.getParentFile());
+		
 		long lastTime = Calendar.getInstance().getTimeInMillis();
 
-		System.out.println("Downloading '" + url + "' to '" + new File(target, targetName).getAbsolutePath() + "'");
+		System.out.println("Downloading '" + url + "' to '" + targetFile.getAbsolutePath() + "'");
 		HttpURLConnection connection = null;
 		connection = (HttpURLConnection) new URL(url).openConnection();
 
@@ -41,7 +37,7 @@ public class DownloadUtils {
 			}
 			int totalSize = connection.getContentLength();
 			input = connection.getInputStream();
-			output = new FileOutputStream(new File(target, targetName));
+			output = new FileOutputStream(targetFile);
 			int read = 0;
 			int count = 0;
 			while ((read = input.read(BUFFER)) != -1) {
