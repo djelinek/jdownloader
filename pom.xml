@@ -11,8 +11,8 @@
 	<distributionManagement>
 		<repository>
 			<id>bintray-apodhrad</id>
-			<name>My releases</name>
-			<url>https://dl.bintray.com/apodhrad/maven/</url>
+			<name>jdownload-manager</name>
+			<url>https://api.bintray.com/maven/apodhrad/maven/jdownload-manager</url>
 		</repository>
 	</distributionManagement>
 
