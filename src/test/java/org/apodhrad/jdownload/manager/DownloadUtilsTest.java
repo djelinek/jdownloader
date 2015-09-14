@@ -7,8 +7,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 
-import org.apodhrad.jdownload.manager.DownloadUtils;
-import org.apodhrad.jdownload.manager.FileUtils;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -26,8 +24,8 @@ public class DownloadUtilsTest {
 	private static final String JETTY_RESOURCE_BASE = System.getProperty("jetty.resourceBase");
 	private static final String TEST_RESOURCE = "gradle-wrapper.jar";
 	private static final String RESOURCE_DIR = DownloadUtilsTest.class.getResource("/").getPath();
-	private static final String CACHE_DIR = new java.io.File(RESOURCE_DIR, "cache").getAbsolutePath();
-	private static final String TARGET_DIR = new java.io.File(RESOURCE_DIR, "target").getAbsolutePath();
+	private static final File CACHE_DIR = new java.io.File(RESOURCE_DIR, "cache");
+	private static final File TARGET_DIR = new java.io.File(RESOURCE_DIR, "target");
 
 	private static Server server;
 
@@ -86,7 +84,7 @@ public class DownloadUtilsTest {
 		assertTrue(new File(TARGET_DIR, "test.jar").exists());
 		assertTrue(new File(TARGET_DIR, "test.jar").isFile());
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void downloadNonExistingResourceTest() throws Exception {
 		DownloadUtils.download("http://localhost:8180/test.jar", TARGET_DIR);

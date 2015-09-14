@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.apodhrad.jdownload.manager.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +15,7 @@ public class FileUtilsTest {
 	private static final String JETTY_RESOURCE_BASE = System.getProperty("jetty.resourceBase");
 	private static final String TEST_RESOURCE = "gradle-wrapper.jar";
 	private static final String RESOURCE_DIR = FileUtilsTest.class.getResource("/").getPath();
-	private static final String TEST_DIR = new File(RESOURCE_DIR, "test").getAbsolutePath();
+	private static final File TEST_DIR = new File(RESOURCE_DIR, "test");
 
 	@Before
 	@After
@@ -26,7 +25,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void unpackJarTest() throws Exception {
-		FileUtils.unpack(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE).getAbsolutePath(), TEST_DIR);
+		FileUtils.unpack(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR);
 
 		assertTrue(new File(TEST_DIR, "META-INF").exists());
 		assertTrue(new File(TEST_DIR, "META-INF").isDirectory());
@@ -34,7 +33,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void copyTest() throws Exception {
-		FileUtils.copy(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE).getAbsolutePath(), TEST_DIR);
+		FileUtils.copy(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR);
 
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).isFile());
@@ -42,7 +41,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void copyWithSameNameTest() throws Exception {
-		FileUtils.copy(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE).getAbsolutePath(), TEST_DIR, TEST_RESOURCE);
+		FileUtils.copy(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR, TEST_RESOURCE);
 
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).isFile());
@@ -50,7 +49,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void copyWithDifferentNameTest() throws Exception {
-		FileUtils.copy(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE).getAbsolutePath(), TEST_DIR, "test.jar");
+		FileUtils.copy(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR, "test.jar");
 
 		assertFalse(new File(TEST_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TEST_DIR, "test.jar").exists());
@@ -61,17 +60,16 @@ public class FileUtilsTest {
 	public void createDirTest() {
 		FileUtils.createDir(TEST_DIR);
 
-		assertTrue(new File(TEST_DIR).exists());
-		assertTrue(new File(TEST_DIR).isDirectory());
+		assertTrue(TEST_DIR.exists());
+		assertTrue(TEST_DIR.isDirectory());
 	}
-	
 
 	@Test
 	public void createExistingDirTest() {
 		FileUtils.createDir(TEST_DIR);
 		FileUtils.createDir(TEST_DIR);
 
-		assertTrue(new File(TEST_DIR).exists());
-		assertTrue(new File(TEST_DIR).isDirectory());
+		assertTrue(TEST_DIR.exists());
+		assertTrue(TEST_DIR.isDirectory());
 	}
 }

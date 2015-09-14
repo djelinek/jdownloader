@@ -48,14 +48,15 @@ public class FileUtils extends org.codehaus.plexus.util.FileUtils {
 		throw new IllegalArgumentException("Unsupported file format");
 	}
 
-	public static void copy(String source, String target) throws IOException {
-		System.out.println("Copying file '" + source + "' to '" + target + "'");
-		FileUtils.copyFileToDirectory(new File(source), new File(target));
+	public static void copy(File source, File target) throws IOException {
+		System.out.println("Copying file '" + source.getAbsolutePath() + "' to '" + target.getAbsolutePath() + "'");
+		FileUtils.copyFileToDirectory(source, target);
 	}
 
-	public static void copy(String source, String target, String targetName) throws IOException {
-		System.out.println("Copying file '" + source + "' to '" + new File(target, targetName).getAbsolutePath() + "'");
-		FileUtils.copyFile(new File(source), new File(target, targetName));
+	public static void copy(File source, File target, String targetName) throws IOException {
+		System.out.println("Copying file '" + source.getAbsolutePath() + "' to '"
+				+ new File(target, targetName).getAbsolutePath() + "'");
+		FileUtils.copyFile(source, new File(target, targetName));
 	}
 
 	public static String generateMD5(File file) throws NoSuchAlgorithmException, IOException {

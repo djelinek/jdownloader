@@ -9,21 +9,34 @@ import java.io.IOException;
  * @author apodhrad
  *
  */
-public class Downloader {
+public class JDownloadManager {
 
 	public static final byte[] BUFFER = new byte[8192];
 
 	public static final String TARGET_DEFAULT = new File(System.getProperty("user.dir")).getAbsolutePath();
-	public static final String CACHE_DEFAULT = new File(System.getProperty("user.home"), ".downloads")
-			.getAbsolutePath();
+	public static final File CACHE_DEFAULT = new File(System.getProperty("user.home"), ".downloads");
 	public static final String CACHE_PROPERTY = "downloader.source";
 
 	private String url;
-	private String cache;
-	private String target;
+	private File cache;
+	private File target;
 	private String targetName;
 	private String md5;
 	private boolean unpack;
+
+	public JDownloadManager() {
+		this(CACHE_DEFAULT);
+	}
+
+	public JDownloadManager(File cache) {
+		if (cache == null) {
+			throw new NullPointerException("");
+		}
+		if (!cache.exists()) {
+
+		}
+		this.cache = cache;
+	}
 
 	public String getUrl() {
 		return url;
@@ -33,8 +46,14 @@ public class Downloader {
 		this.url = url;
 	}
 
-	public void setCache(String cache) {
-		this.cache = cache;
+	public void setCache(File cache) {
+		cache = checkNotNull(cache, "cache");
+
+		if (!cache.exists() && !cache.mkdirs()) {
+			throw new RuntimeException("Cannot make dirs '" + cache.getAbsolutePath() + "'");
+		}
+		
+		this.cache = isDirectory(cache);
 	}
 
 	/*
@@ -43,7 +62,7 @@ public class Downloader {
 	 * 
 	 * @return cache folder absolute path
 	 */
-	public String getCache() {
+	public File getCache() {
 		return cache;
 		// String cache = System.getProperty(CACHE_PROPERTY, CACHE_DEFAULT);
 		// File cacheFile = new File(cache);
@@ -53,11 +72,11 @@ public class Downloader {
 		// return cache;
 	}
 
-	public String getTarget() {
+	public File getTarget() {
 		return target;
 	}
 
-	public void setTarget(String target) {
+	public void setTarget(File target) {
 		this.target = target;
 	}
 
@@ -86,8 +105,8 @@ public class Downloader {
 	}
 
 	public void download() throws IOException {
-		String cache = getCache();
-		String target = getTarget();
+		File cache = getCache();
+		File target = getTarget();
 		String targetName = getTargetName();
 		String originalName = DownloadUtils.getName(url);
 
@@ -101,18 +120,32 @@ public class Downloader {
 			if (!file.exists()) {
 				DownloadUtils.download(url, cache, originalName);
 			}
-			FileUtils.copy(new File(cache, originalName).getAbsolutePath(), target, targetName);
+			FileUtils.copy(new File(cache, originalName), target, targetName);
 		} else {
 			DownloadUtils.download(url, target, targetName);
 		}
 		if (unpack) {
-			FileUtils.unpack(new File(target, targetName), new File(target));
+			FileUtils.unpack(new File(target, targetName), target);
 		}
 	}
 
 	public static String getName(String url) {
 		String[] parser = url.split("/");
 		return parser[parser.length - 1];
+	}
+
+	private static <T> T checkNotNull(T object, String parameterName) {
+		if (object == null) {
+			throw new NullPointerException("The parameter '" + parameterName + "' cannot be null!");
+		}
+		return object;
+	}
+
+	private static File isDirectory(File file) {
+		if (!file.isDirectory()) {
+			throw new IllegalArgumentException("File '" + file.getAbsolutePath() + "' must be a directory!");
+		}
+		return file;
 	}
 
 }

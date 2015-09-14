@@ -18,11 +18,11 @@ public class DownloadUtils {
 
 	public static final byte[] BUFFER = new byte[4 * 1024];
 
-	public static void download(String url, String target) throws IOException {
+	public static void download(String url, File target) throws IOException {
 		download(url, target, getName(url));
 	}
 
-	public static void download(String url, String target, String targetName) throws IOException {
+	public static void download(String url, File target, String targetName) throws IOException {
 		FileUtils.createDir(target);
 
 		long lastTime = Calendar.getInstance().getTimeInMillis();
