@@ -40,7 +40,7 @@ public class JDownloadManagerTest {
 
 	@BeforeClass
 	public static void startServer() throws Exception {
-		assertNotNull("Systemproperty jetty.resourceBase is not set", JETTY_RESOURCE_BASE);
+		assertNotNull("System property jetty.resourceBase is not set", JETTY_RESOURCE_BASE);
 		if (!new java.io.File(JETTY_RESOURCE_BASE).exists()) {
 			fail("'" + JETTY_RESOURCE_BASE + "' doesn't exist");
 		}
@@ -72,8 +72,8 @@ public class JDownloadManagerTest {
 
 	@Test
 	public void downloadTest() throws Exception {
-		JDownloadManager testResource = new JDownloadManager(CACHE_DIR);
-		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
+		JDownloadManager manager = new JDownloadManager(CACHE_DIR);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
 
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
@@ -88,8 +88,8 @@ public class JDownloadManagerTest {
 
 	@Test
 	public void downloadUnpackTest() throws Exception {
-		JDownloadManager testResource = new JDownloadManager(CACHE_DIR);
-		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, true);
+		JDownloadManager manager = new JDownloadManager(CACHE_DIR);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, true);
 
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
@@ -103,8 +103,8 @@ public class JDownloadManagerTest {
 	public void downloadTargetExistingResourceTest() throws Exception {
 		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, new File(TARGET_DIR, TEST_RESOURCE));
 
-		JDownloadManager testResource = new JDownloadManager(CACHE_DIR);
-		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
+		JDownloadManager manager = new JDownloadManager(CACHE_DIR);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
 
 		assertFalse(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
@@ -112,11 +112,41 @@ public class JDownloadManagerTest {
 	}
 
 	@Test
+	public void downloadTargetExistingResourceWithCorrectMD5Test() throws Exception {
+		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, new File(TARGET_DIR, TEST_RESOURCE));
+
+		JDownloadManager manager = new JDownloadManager(CACHE_DIR);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, TEST_RESOURCE, "e4cd368a8e06aa0d3f9f8c7b078df0a1");
+
+		assertFalse(new File(CACHE_DIR, TEST_RESOURCE).exists());
+		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
+		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).isFile());
+	}
+
+	@Test
+	public void downloadTargetExistingResourceWithIncorrectMD5Test() throws Exception {
+		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, new File(TARGET_DIR, TEST_RESOURCE));
+
+		JDownloadManager manager = new JDownloadManager(CACHE_DIR);
+		try {
+			manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, TEST_RESOURCE, "e4cd368a8e06aa0d3f9f8c7b078df0a2");
+		} catch (RuntimeException re) {
+			// ok, this is expected
+			assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
+			assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
+			assertTrue(new File(TARGET_DIR, TEST_RESOURCE).isFile());
+			return;
+		}
+
+		fail("Manager should throw an exception about incorrect MD5!");
+	}
+
+	@Test
 	public void downloadCacheExistingResourceTest() throws Exception {
 		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, new File(CACHE_DIR, TEST_RESOURCE));
 
-		JDownloadManager testResource = new JDownloadManager(CACHE_DIR);
-		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
+		JDownloadManager manager = new JDownloadManager(CACHE_DIR);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
 
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
@@ -125,9 +155,51 @@ public class JDownloadManagerTest {
 	}
 
 	@Test
+	public void downloadCacheExistingResourceWithCorrectMD5Test() throws Exception {
+		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, new File(CACHE_DIR, TEST_RESOURCE));
+		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
+		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
+
+		long lastModified = new File(CACHE_DIR, TEST_RESOURCE).lastModified();
+		Thread.sleep(1000);
+
+		JDownloadManager manager = new JDownloadManager(CACHE_DIR);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, TEST_RESOURCE, "e4cd368a8e06aa0d3f9f8c7b078df0a1");
+
+		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
+		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
+		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
+		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).isFile());
+		assertTrue(lastModified == new File(CACHE_DIR, TEST_RESOURCE).lastModified());
+	}
+
+	@Test
+	public void downloadCacheExistingResourceWithIncorrectMD5Test() throws Exception {
+		DownloadUtils.download(JETTY_TEST_RESOURCE_URL, new File(CACHE_DIR, TEST_RESOURCE));
+		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
+		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
+
+		long lastModified = new File(CACHE_DIR, TEST_RESOURCE).lastModified();
+		Thread.sleep(1000);
+
+		JDownloadManager manager = new JDownloadManager(CACHE_DIR);
+		try {
+			manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, TEST_RESOURCE, "e4cd368a8e06aa0d3f9f8c7b078df0a2");
+		} catch (RuntimeException re) {
+			assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
+			assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
+			assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
+			assertTrue(new File(TARGET_DIR, TEST_RESOURCE).isFile());
+			assertTrue(lastModified < new File(CACHE_DIR, TEST_RESOURCE).lastModified());
+			return;
+		}
+		fail("Manager should throw an exception about incorrect MD5!");
+	}
+
+	@Test
 	public void downloadWithoutCacheTest() throws Exception {
-		JDownloadManager testResource = new JDownloadManager(null);
-		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
+		JDownloadManager manager = new JDownloadManager(null);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR);
 
 		assertFalse(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
@@ -136,8 +208,8 @@ public class JDownloadManagerTest {
 
 	@Test
 	public void downloadWithoutCacheUnpackTest() throws Exception {
-		JDownloadManager testResource = new JDownloadManager(null);
-		testResource.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, true);
+		JDownloadManager manager = new JDownloadManager(null);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, true);
 
 		assertFalse(new File(CACHE_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());

@@ -1,5 +1,7 @@
 package org.apodhrad.jdownload.manager;
 
+import static org.apodhrad.jdownload.manager.FileUtils.matchMD5;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -55,25 +57,37 @@ public class JDownloadManager {
 		download(url, target, targetName, false);
 	}
 
+	public void download(String url, File target, String targetName, String md5) throws IOException {
+		download(url, target, targetName, false, md5);
+	}
+
 	public void download(String url, File target, String targetName, boolean unpack) throws IOException {
+		download(url, target, targetName, unpack, null);
+	}
+
+	public void download(String url, File target, String targetName, boolean unpack, String md5) throws IOException {
 		checkNotNull(url, "url");
 		checkNotNull(target, "target");
 		checkNotNull(targetName, "targetName");
 
 		File targetFile = new File(target, targetName);
-		if (targetFile.exists()) {
+		if (targetFile.exists() && matchMD5(targetFile, md5)) {
 			System.out.println("File '" + targetName + "' already exists in " + target);
 			return;
 		}
 
 		if (isCacheManaged()) {
 			File cacheFile = new File(getCache(), targetName);
-			if (!cacheFile.exists()) {
+			if (!cacheFile.exists() || !matchMD5(cacheFile, md5)) {
 				DownloadUtils.download(url, cacheFile);
 			}
 			FileUtils.copyFile(cacheFile, targetFile);
 		} else {
 			DownloadUtils.download(url, targetFile);
+		}
+
+		if (!matchMD5(targetFile, md5)) {
+			throw new RuntimeException("File '" + targetFile.getAbsolutePath() + "' doesn't match '" + md5 + "'");
 		}
 
 		if (unpack) {
