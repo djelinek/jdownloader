@@ -1,9 +1,10 @@
 package org.apodhrad.jdownload.manager;
 
-import static org.apodhrad.jdownload.manager.FileUtils.matchMD5;
-
 import java.io.File;
 import java.io.IOException;
+
+import org.apodhrad.jdownload.manager.hash.Hash;
+import org.apodhrad.jdownload.manager.hash.NullHash;
 
 /**
  * JDownload manager is a cache-managed download manager.
@@ -46,39 +47,47 @@ public class JDownloadManager {
 	}
 
 	public void download(String url, File target) throws IOException {
-		download(url, target, false);
+		download(url, target, new NullHash());
+	}
+
+	public void download(String url, File target, Hash hash) throws IOException {
+		download(url, target, false, hash);
 	}
 
 	public void download(String url, File target, boolean unpack) throws IOException {
 		download(url, target, DownloadUtils.getName(url), unpack);
 	}
 
+	public void download(String url, File target, boolean unpack, Hash hash) throws IOException {
+		download(url, target, DownloadUtils.getName(url), unpack, hash);
+	}
+
 	public void download(String url, File target, String targetName) throws IOException {
 		download(url, target, targetName, false);
 	}
 
-	public void download(String url, File target, String targetName, String md5) throws IOException {
-		download(url, target, targetName, false, md5);
+	public void download(String url, File target, String targetName, Hash hash) throws IOException {
+		download(url, target, targetName, false, hash);
 	}
 
 	public void download(String url, File target, String targetName, boolean unpack) throws IOException {
-		download(url, target, targetName, unpack, null);
+		download(url, target, targetName, unpack, new NullHash());
 	}
 
-	public void download(String url, File target, String targetName, boolean unpack, String md5) throws IOException {
+	public void download(String url, File target, String targetName, boolean unpack, Hash hash) throws IOException {
 		checkNotNull(url, "url");
 		checkNotNull(target, "target");
 		checkNotNull(targetName, "targetName");
 
 		File targetFile = new File(target, targetName);
-		if (targetFile.exists() && matchMD5(targetFile, md5)) {
+		if (targetFile.exists() && hash.matches(targetFile)) {
 			System.out.println("File '" + targetName + "' already exists in " + target);
 			return;
 		}
 
 		if (isCacheManaged()) {
 			File cacheFile = new File(getCache(), targetName);
-			if (!cacheFile.exists() || !matchMD5(cacheFile, md5)) {
+			if (!cacheFile.exists() || !hash.matches(cacheFile)) {
 				DownloadUtils.download(url, cacheFile);
 			}
 			FileUtils.copyFile(cacheFile, targetFile);
@@ -86,8 +95,8 @@ public class JDownloadManager {
 			DownloadUtils.download(url, targetFile);
 		}
 
-		if (!matchMD5(targetFile, md5)) {
-			throw new RuntimeException("File '" + targetFile.getAbsolutePath() + "' doesn't match '" + md5 + "'");
+		if (!hash.matches(targetFile)) {
+			throw new RuntimeException("File '" + targetFile.getAbsolutePath() + "' doesn't match '" + hash + "'");
 		}
 
 		if (unpack) {
