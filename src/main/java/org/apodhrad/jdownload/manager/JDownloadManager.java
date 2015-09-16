@@ -46,35 +46,35 @@ public class JDownloadManager {
 		return getCache() != null;
 	}
 
-	public void download(String url, File target) throws IOException {
-		download(url, target, new NullHash());
+	public File download(String url, File target) throws IOException {
+		return download(url, target, new NullHash());
 	}
 
-	public void download(String url, File target, Hash hash) throws IOException {
-		download(url, target, false, hash);
+	public File download(String url, File target, Hash hash) throws IOException {
+		return download(url, target, false, hash);
 	}
 
-	public void download(String url, File target, boolean unpack) throws IOException {
-		download(url, target, DownloadUtils.getName(url), unpack);
+	public File download(String url, File target, boolean unpack) throws IOException {
+		return download(url, target, DownloadUtils.getName(url), unpack);
 	}
 
-	public void download(String url, File target, boolean unpack, Hash hash) throws IOException {
-		download(url, target, DownloadUtils.getName(url), unpack, hash);
+	public File download(String url, File target, boolean unpack, Hash hash) throws IOException {
+		return download(url, target, DownloadUtils.getName(url), unpack, hash);
 	}
 
-	public void download(String url, File target, String targetName) throws IOException {
-		download(url, target, targetName, false);
+	public File download(String url, File target, String targetName) throws IOException {
+		return download(url, target, targetName, false);
 	}
 
-	public void download(String url, File target, String targetName, Hash hash) throws IOException {
-		download(url, target, targetName, false, hash);
+	public File download(String url, File target, String targetName, Hash hash) throws IOException {
+		return download(url, target, targetName, false, hash);
 	}
 
-	public void download(String url, File target, String targetName, boolean unpack) throws IOException {
-		download(url, target, targetName, unpack, new NullHash());
+	public File download(String url, File target, String targetName, boolean unpack) throws IOException {
+		return download(url, target, targetName, unpack, new NullHash());
 	}
 
-	public void download(String url, File target, String targetName, boolean unpack, Hash hash) throws IOException {
+	public File download(String url, File target, String targetName, boolean unpack, Hash hash) throws IOException {
 		checkNotNull(url, "url");
 		checkNotNull(target, "target");
 		checkNotNull(targetName, "targetName");
@@ -82,7 +82,7 @@ public class JDownloadManager {
 		File targetFile = new File(target, targetName);
 		if (targetFile.exists() && hash.matches(targetFile)) {
 			System.out.println("File '" + targetName + "' already exists in " + target);
-			return;
+			return targetFile;
 		}
 
 		if (isCacheManaged()) {
@@ -103,6 +103,7 @@ public class JDownloadManager {
 			FileUtils.unpack(targetFile, target);
 		}
 
+		return targetFile;
 	}
 
 	public static String getName(String url) {
