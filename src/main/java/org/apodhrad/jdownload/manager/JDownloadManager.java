@@ -1,5 +1,7 @@
 package org.apodhrad.jdownload.manager;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -77,9 +79,10 @@ public class JDownloadManager {
 	}
 
 	public File download(String url, File target, String targetName, boolean unpack, Hash hash) throws IOException {
-		checkNotNull(url, "url");
-		checkNotNull(target, "target");
-		checkNotNull(targetName, "targetName");
+		requireNonNull(url, "url caanot be null");
+		requireNonNull(target, "target cannot be null");
+		requireNonNull(targetName, "targetName cannot be null");
+		requireNonNull(targetName, "hash cannot be null, use NullHash");
 
 		File targetFile = new File(target, targetName);
 		if (targetFile.exists() && hash.matches(targetFile)) {
@@ -109,18 +112,11 @@ public class JDownloadManager {
 	}
 
 	public static String getName(String url) {
-		String[] parser = checkNotNull(url, "url").split("/");
+		String[] parser = requireNonNull(url, "url cannot be null").split("/");
 		return parser[parser.length - 1];
 	}
 
-	private static <T> T checkNotNull(T object, String parameterName) {
-		if (object == null) {
-			throw new NullPointerException("The parameter '" + parameterName + "' cannot be null!");
-		}
-		return object;
-	}
-
-	private static File isDirectory(File file) {
+	public static File isDirectory(File file) {
 		if (!file.isDirectory()) {
 			throw new IllegalArgumentException("File '" + file.getAbsolutePath() + "' must be a directory!");
 		}

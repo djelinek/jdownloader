@@ -45,7 +45,7 @@ public abstract class Hash {
 		return sum.equals(convertToHex(hash));
 	}
 
-	private static String convertToHex(byte[] data) {
+	public static String convertToHex(byte[] data) {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < data.length; i++) {
 			int halfbyte = (data[i] >>> 4) & 0x0F;
