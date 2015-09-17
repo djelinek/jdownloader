@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
+ * SHA-1 hash implementation.
  * 
  * @author apodhrad
  *
@@ -16,6 +17,7 @@ public class SHA1Hash extends Hash {
 		super(sha1sum);
 	}
 
+	@Override
 	public MessageDigest getMessageDigest() {
 		if (MESSAGE_DIGEST == null) {
 			try {

@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 
 /**
+ * An abstract implementation of a hash algorithm.
  * 
  * @author apodhrad
  *
@@ -19,10 +20,21 @@ public abstract class Hash {
 
 	private String sum;
 
+	/**
+	 * Create a new hash implementation with a given hash sum.
+	 * 
+	 * @param sum
+	 *            Hash sum
+	 */
 	public Hash(String sum) {
 		this.sum = sum;
 	}
 
+	/**
+	 * Implement this method with the appropriate message digest.
+	 * 
+	 * @return A concrete message digest
+	 */
 	public abstract MessageDigest getMessageDigest();
 
 	public boolean matches(File file) throws IOException {
@@ -45,6 +57,13 @@ public abstract class Hash {
 		return sum.equals(convertToHex(hash));
 	}
 
+	/**
+	 * Converts an array of bytes to hex.
+	 * 
+	 * @param data
+	 *            An array of bytes
+	 * @return Hex
+	 */
 	public static String convertToHex(byte[] data) {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < data.length; i++) {

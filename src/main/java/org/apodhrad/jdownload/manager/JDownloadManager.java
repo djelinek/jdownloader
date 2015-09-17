@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.apodhrad.jdownload.manager.hash.Hash;
 import org.apodhrad.jdownload.manager.hash.NullHash;
 import org.apodhrad.jdownload.manager.util.DownloadUtils;
-import org.apodhrad.jdownload.manager.util.FileUtils;
+import org.apodhrad.jdownload.manager.util.UnpackUtils;
 
 /**
  * JDownload manager is a cache-managed download manager.
@@ -59,42 +59,172 @@ public class JDownloadManager {
 		return new File(System.getProperty("user.home"), "Downloads");
 	}
 
+	/**
+	 * Returns the cache folder.
+	 * 
+	 * @return Cache folder
+	 */
 	public File getCache() {
 		return cache;
 	}
 
+	/**
+	 * Returns whether the download manager uses a cache.
+	 * 
+	 * @return true if a cache folder is defined
+	 */
 	public boolean isCacheManaged() {
 		return getCache() != null;
 	}
 
+	/**
+	 * Downloads a file from a given url to the specified target folder.
+	 * 
+	 * @param url
+	 *            Url
+	 * @param target
+	 *            Target folder
+	 * @return The downloaded file
+	 * @throws IOException
+	 *             If an I/O error occurred
+	 */
 	public File download(String url, File target) throws IOException {
 		return download(url, target, new NullHash());
 	}
 
+	/**
+	 * Downloads a file from a given url to the specified target folder.
+	 * 
+	 * @param url
+	 *            Url
+	 * @param target
+	 *            Target folder
+	 * @param hash
+	 *            Check the downloaded file with a hash
+	 * @return The downloaded file
+	 * @throws IOException
+	 *             If an I/O error occurred
+	 */
 	public File download(String url, File target, Hash hash) throws IOException {
 		return download(url, target, false, hash);
 	}
 
+	/**
+	 * Downloads a file from a given url to the specified target folder. The
+	 * downloaded file is extracted if the parameter unpack is set to true.
+	 * 
+	 * @param url
+	 *            Url
+	 * @param target
+	 *            Target folder
+	 * @param unpack
+	 *            Extract the downloaded file?
+	 * @return The downloaded file
+	 * @throws IOException
+	 *             If an I/O error occurred
+	 */
 	public File download(String url, File target, boolean unpack) throws IOException {
 		return download(url, target, DownloadUtils.getName(url), unpack);
 	}
 
+	/**
+	 * Downloads a file from a given url to the specified target folder. The
+	 * downloaded file is extracted if the parameter unpack is set to true.
+	 * 
+	 * @param url
+	 *            Url
+	 * @param target
+	 *            Target folder
+	 * @param unpack
+	 *            Extract the downloaded file?
+	 * @param hash
+	 *            Check the downloaded file with a hash
+	 * @return The downloaded file
+	 * @throws IOException
+	 *             If an I/O error occurred
+	 */
 	public File download(String url, File target, boolean unpack, Hash hash) throws IOException {
 		return download(url, target, DownloadUtils.getName(url), unpack, hash);
 	}
 
+	/**
+	 * Downloads a file from a given url to the specified target folder with the
+	 * target name.
+	 * 
+	 * @param url
+	 *            Url
+	 * @param target
+	 *            Target folder
+	 * @param targetName
+	 *            Target name
+	 * @return The downloaded file
+	 * @throws IOException
+	 *             If an I/O error occurred
+	 */
 	public File download(String url, File target, String targetName) throws IOException {
 		return download(url, target, targetName, false);
 	}
 
+	/**
+	 * Downloads a file from a given url to the specified target folder with the
+	 * target name.
+	 * 
+	 * @param url
+	 *            Url
+	 * @param target
+	 *            Target folder
+	 * @param targetName
+	 *            Target name
+	 * @param hash
+	 *            Check the downloaded file with a hash
+	 * @return The downloaded file
+	 * @throws IOException
+	 *             If an I/O error occurred
+	 */
 	public File download(String url, File target, String targetName, Hash hash) throws IOException {
 		return download(url, target, targetName, false, hash);
 	}
 
+	/**
+	 * Downloads a file from a given url to the specified target folder with the
+	 * target name. The downloaded file is extracted if the parameter unpack is
+	 * set to true.
+	 * 
+	 * @param url
+	 *            Url
+	 * @param target
+	 *            Target folder
+	 * @param targetName
+	 *            Target name
+	 * @param unpack
+	 *            Extract the downloaded file?
+	 * @return The downloaded file
+	 * @throws IOException
+	 *             If an I/O error occurred
+	 */
 	public File download(String url, File target, String targetName, boolean unpack) throws IOException {
 		return download(url, target, targetName, unpack, new NullHash());
 	}
 
+	/**
+	 * Downloads a file from a given url to the specified target folder with the
+	 * target name. The downloaded file is extracted if the parameter unpack is
+	 * set to true.
+	 * 
+	 * @param url
+	 *            Url
+	 * @param target
+	 *            Target folder
+	 * @param targetName
+	 *            Target name
+	 * @param unpack
+	 *            Extract the downloaded file?
+	 * @param hash
+	 *            Check the downloaded file with a hash
+	 * @return The downloaded file
+	 * @throws IOException
+	 *             If an I/O error occurred
+	 */
 	public File download(String url, File target, String targetName, boolean unpack, Hash hash) throws IOException {
 		requireNonNull(url, "url caanot be null");
 		requireNonNull(target, "target cannot be null");
@@ -112,7 +242,7 @@ public class JDownloadManager {
 			if (!cacheFile.exists() || !hash.matches(cacheFile)) {
 				DownloadUtils.download(url, cacheFile);
 			}
-			FileUtils.copyFile(cacheFile, targetFile);
+			UnpackUtils.copyFile(cacheFile, targetFile);
 		} else {
 			DownloadUtils.download(url, targetFile);
 		}
@@ -122,7 +252,7 @@ public class JDownloadManager {
 		}
 
 		if (unpack) {
-			FileUtils.unpack(targetFile, target);
+			UnpackUtils.unpack(targetFile, target);
 		}
 
 		return targetFile;

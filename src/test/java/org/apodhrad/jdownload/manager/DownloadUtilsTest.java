@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apodhrad.jdownload.manager.util.DownloadUtils;
-import org.apodhrad.jdownload.manager.util.FileUtils;
+import org.apodhrad.jdownload.manager.util.UnpackUtils;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -58,7 +58,7 @@ public class DownloadUtilsTest {
 	@Before
 	@After
 	public void deleteTargetDirectory() throws IOException {
-		FileUtils.deleteDirectory(TARGET_DIR);
+		UnpackUtils.deleteDirectory(TARGET_DIR);
 	}
 
 	@Test

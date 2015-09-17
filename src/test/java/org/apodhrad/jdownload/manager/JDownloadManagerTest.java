@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import org.apodhrad.jdownload.manager.hash.MD5Hash;
 import org.apodhrad.jdownload.manager.util.DownloadUtils;
-import org.apodhrad.jdownload.manager.util.FileUtils;
+import org.apodhrad.jdownload.manager.util.UnpackUtils;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -69,8 +69,8 @@ public class JDownloadManagerTest {
 	@Before
 	@After
 	public void deleteCacheAndTarget() throws IOException {
-		FileUtils.deleteDirectory(CACHE_DIR);
-		FileUtils.deleteDirectory(TARGET_DIR);
+		UnpackUtils.deleteDirectory(CACHE_DIR);
+		UnpackUtils.deleteDirectory(TARGET_DIR);
 	}
 
 	@Test

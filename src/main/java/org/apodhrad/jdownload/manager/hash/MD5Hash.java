@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
+ * MD5 hash implementation.
  * 
  * @author apodhrad
  *
@@ -16,6 +17,7 @@ public class MD5Hash extends Hash {
 		super(md5sum);
 	}
 
+	@Override
 	public MessageDigest getMessageDigest() {
 		if (MESSAGE_DIGEST == null) {
 			try {

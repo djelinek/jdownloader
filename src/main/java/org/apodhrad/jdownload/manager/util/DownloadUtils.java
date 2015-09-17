@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.Calendar;
 
 /**
+ * A utility for downloading a file.
  * 
  * @author apodhrad
  *
@@ -19,8 +20,8 @@ public class DownloadUtils {
 	public static final byte[] BUFFER = new byte[4 * 1024];
 
 	public static void download(String url, File targetFile) throws IOException {
-		FileUtils.createDir(targetFile.getParentFile());
-		
+		UnpackUtils.createDir(targetFile.getParentFile());
+
 		long lastTime = Calendar.getInstance().getTimeInMillis();
 
 		System.out.println("Downloading '" + url + "' to '" + targetFile.getAbsolutePath() + "'");

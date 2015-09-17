@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.security.MessageDigest;
 
 /**
+ * A hash implementation which always returns true.
  * 
  * @author apodhrad
  *

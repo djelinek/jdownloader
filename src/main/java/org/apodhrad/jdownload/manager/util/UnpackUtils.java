@@ -8,11 +8,12 @@ import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 
 /**
+ * A utility for extracting archives.
  * 
  * @author apodhrad
  *
  */
-public class FileUtils extends org.codehaus.plexus.util.FileUtils {
+public class UnpackUtils extends org.codehaus.plexus.util.FileUtils {
 
 	public static void unpack(String file, String target) {
 		unpack(new File(file), new File(target));

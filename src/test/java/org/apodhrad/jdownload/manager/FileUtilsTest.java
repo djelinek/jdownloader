@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.apodhrad.jdownload.manager.util.FileUtils;
+import org.apodhrad.jdownload.manager.util.UnpackUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -28,12 +28,12 @@ public class FileUtilsTest {
 	@Before
 	@After
 	public void deleteTestDir() throws IOException {
-		FileUtils.deleteDirectory(TEST_DIR);
+		UnpackUtils.deleteDirectory(TEST_DIR);
 	}
 
 	@Test
 	public void unpackJarTest() throws Exception {
-		FileUtils.unpack(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR);
+		UnpackUtils.unpack(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR);
 
 		assertTrue(new File(TEST_DIR, "META-INF").exists());
 		assertTrue(new File(TEST_DIR, "META-INF").isDirectory());
@@ -41,7 +41,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void copyTest() throws Exception {
-		FileUtils.copyFileToDirectory(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR);
+		UnpackUtils.copyFileToDirectory(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), TEST_DIR);
 
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).isFile());
@@ -49,7 +49,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void copyWithSameNameTest() throws Exception {
-		FileUtils.copyFile(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), new File(TEST_DIR, TEST_RESOURCE));
+		UnpackUtils.copyFile(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), new File(TEST_DIR, TEST_RESOURCE));
 
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TEST_DIR, TEST_RESOURCE).isFile());
@@ -57,7 +57,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void copyWithDifferentNameTest() throws Exception {
-		FileUtils.copyFile(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), new File(TEST_DIR, "test.jar"));
+		UnpackUtils.copyFile(new File(JETTY_RESOURCE_BASE, TEST_RESOURCE), new File(TEST_DIR, "test.jar"));
 
 		assertFalse(new File(TEST_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TEST_DIR, "test.jar").exists());
@@ -66,7 +66,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void createDirTest() {
-		FileUtils.createDir(TEST_DIR);
+		UnpackUtils.createDir(TEST_DIR);
 
 		assertTrue(TEST_DIR.exists());
 		assertTrue(TEST_DIR.isDirectory());
@@ -74,8 +74,8 @@ public class FileUtilsTest {
 
 	@Test
 	public void createExistingDirTest() {
-		FileUtils.createDir(TEST_DIR);
-		FileUtils.createDir(TEST_DIR);
+		UnpackUtils.createDir(TEST_DIR);
+		UnpackUtils.createDir(TEST_DIR);
 
 		assertTrue(TEST_DIR.exists());
 		assertTrue(TEST_DIR.isDirectory());
