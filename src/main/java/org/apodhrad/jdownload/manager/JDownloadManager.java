@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.apodhrad.jdownload.manager.hash.Hash;
 import org.apodhrad.jdownload.manager.hash.NullHash;
+import org.apodhrad.jdownload.manager.util.DownloadUtils;
+import org.apodhrad.jdownload.manager.util.FileUtils;
 
 /**
  * JDownload manager is a cache-managed download manager.

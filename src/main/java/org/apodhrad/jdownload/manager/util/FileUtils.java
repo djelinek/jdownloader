@@ -1,4 +1,4 @@
-package org.apodhrad.jdownload.manager;
+package org.apodhrad.jdownload.manager.util;
 
 import java.io.File;
 

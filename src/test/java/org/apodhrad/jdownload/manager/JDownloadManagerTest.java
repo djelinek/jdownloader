@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apodhrad.jdownload.manager.hash.MD5Hash;
+import org.apodhrad.jdownload.manager.util.DownloadUtils;
+import org.apodhrad.jdownload.manager.util.FileUtils;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
