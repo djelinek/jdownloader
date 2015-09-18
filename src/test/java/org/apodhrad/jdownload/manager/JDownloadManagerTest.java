@@ -35,6 +35,7 @@ public class JDownloadManagerTest {
 	private static final String RESOURCE_DIR = JDownloadManagerTest.class.getResource("/").getPath();
 	private static final File CACHE_DIR = new java.io.File(RESOURCE_DIR, "cache");
 	private static final File TARGET_DIR = new java.io.File(RESOURCE_DIR, "target");
+	private static final String MAVEN3_URL = "http://mirror.hosting90.cz/apache/maven/maven-3";
 
 	private static Server server;
 
@@ -214,7 +215,7 @@ public class JDownloadManagerTest {
 	}
 
 	@Test
-	public void downloadWithoutCacheUnpackTest() throws Exception {
+	public void downloadWithoutCacheUnpackJarTest() throws Exception {
 		JDownloadManager manager = new JDownloadManager(null);
 		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, true);
 
@@ -223,6 +224,28 @@ public class JDownloadManagerTest {
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).isFile());
 		assertTrue(new File(TARGET_DIR, "META-INF").exists());
 		assertTrue(new File(TARGET_DIR, "META-INF").isDirectory());
+	}
+
+	@Test
+	public void downloadWithoutCacheUnpackZipTest() throws Exception {
+		JDownloadManager manager = new JDownloadManager(null);
+		manager.download(MAVEN3_URL + "/3.0.5/binaries/apache-maven-3.0.5-bin.zip", TARGET_DIR, true);
+
+		assertFalse(new File(CACHE_DIR, "apache-maven-3.0.5-bin.zip").exists());
+		assertTrue(new File(TARGET_DIR, "apache-maven-3.0.5-bin.zip").exists());
+		assertTrue(new File(TARGET_DIR, "apache-maven-3.0.5").exists());
+		assertTrue(new File(new File(TARGET_DIR, "apache-maven-3.0.5"), "README.txt").exists());
+	}
+
+	@Test
+	public void downloadWithoutCacheUnpackTarGzTest() throws Exception {
+		JDownloadManager manager = new JDownloadManager(null);
+		manager.download(MAVEN3_URL + "/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz", TARGET_DIR, true);
+
+		assertFalse(new File(CACHE_DIR, "apache-maven-3.0.5-bin.tar.gz").exists());
+		assertTrue(new File(TARGET_DIR, "apache-maven-3.0.5-bin.tar.gz").exists());
+		assertTrue(new File(TARGET_DIR, "apache-maven-3.0.5").exists());
+		assertTrue(new File(new File(TARGET_DIR, "apache-maven-3.0.5"), "README.txt").exists());
 	}
 
 	@Test

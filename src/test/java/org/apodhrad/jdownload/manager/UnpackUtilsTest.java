@@ -13,11 +13,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FileUtilsTest {
+public class UnpackUtilsTest {
 
 	private static final String JETTY_RESOURCE_BASE = System.getProperty("jetty.resourceBase");
 	private static final String TEST_RESOURCE = "gradle-wrapper.jar";
-	private static final String RESOURCE_DIR = FileUtilsTest.class.getResource("/").getPath();
+	private static final String RESOURCE_DIR = UnpackUtilsTest.class.getResource("/").getPath();
 	private static final File TEST_DIR = new File(RESOURCE_DIR, "test");
 
 	@BeforeClass

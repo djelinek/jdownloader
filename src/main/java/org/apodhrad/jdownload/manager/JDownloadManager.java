@@ -38,6 +38,7 @@ public class JDownloadManager {
 	 * want to use a cache folder then pass null argument.
 	 * 
 	 * @param cache
+	 *            Cache folder
 	 */
 	public JDownloadManager(File cache) {
 		if (cache == null) {
