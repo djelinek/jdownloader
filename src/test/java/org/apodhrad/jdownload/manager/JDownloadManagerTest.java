@@ -3,6 +3,7 @@ package org.apodhrad.jdownload.manager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -251,6 +252,26 @@ public class JDownloadManagerTest {
 	@Test
 	public void getNameTest() {
 		assertEquals(TEST_RESOURCE, JDownloadManager.getName(JETTY_TEST_RESOURCE_URL));
+	}
+
+	@Test
+	public void defaultCacheTest() {
+		if (System.getProperty("jdownload.nochache") != null) {
+			System.setProperty("jdownload.nochache", null);
+		}
+		if (System.getProperty("jdownload.chache") != null) {
+			System.setProperty("jdownload.chache", null);
+		}
+		String userHome = System.getProperty("user.home");
+		assertEquals(new File(userHome, "Downloads"), new JDownloadManager().getCache());
+		System.setProperty("jdownload.nocache", "true");
+		assertNull(new JDownloadManager().getCache());
+		System.setProperty("jdownload.nocache", "false");
+		assertEquals(new File(userHome, "Downloads"), new JDownloadManager().getCache());
+		System.setProperty("jdownload.cache", CACHE_DIR.getAbsolutePath());
+		assertEquals(CACHE_DIR, new JDownloadManager().getCache());
+		System.setProperty("jdownload.nocache", "true");
+		assertNull(new JDownloadManager().getCache());
 	}
 
 }

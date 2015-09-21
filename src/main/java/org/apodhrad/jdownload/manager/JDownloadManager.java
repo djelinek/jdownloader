@@ -22,12 +22,15 @@ public class JDownloadManager {
 
 	public static final String CACHE_PROPERTY = "jdownload.cache";
 
+	public static final String NOCACHE_PROPERTY = "jdownload.nocache";
+
 	private File cache;
 
 	/**
-	 * Creates a new download manager with the cache folder ~/Downloads. You can
-	 * override the default cache by setting the system property
-	 * jdownload.cache.
+	 * Creates a new download manager with the default cache folder ~/Downloads.
+	 * You can override the default cache by setting the system property
+	 * jdownload.cache. If you don't want to use any cache, set the system
+	 * property jdownload.nocache to true.
 	 */
 	public JDownloadManager() {
 		this(getDefaultCache());
@@ -53,9 +56,13 @@ public class JDownloadManager {
 	}
 
 	private static File getDefaultCache() {
-		String systemProperty = System.getProperty(CACHE_PROPERTY);
-		if (systemProperty != null && systemProperty.length() > 0) {
-			return new File(systemProperty);
+		String nocacheProperty = System.getProperty(NOCACHE_PROPERTY, "false");
+		if (Boolean.valueOf(nocacheProperty)) {
+			return null;
+		}
+		String cacheProperty = System.getProperty(CACHE_PROPERTY);
+		if (cacheProperty != null && cacheProperty.length() > 0) {
+			return new File(cacheProperty);
 		}
 		return new File(System.getProperty("user.home"), "Downloads");
 	}
