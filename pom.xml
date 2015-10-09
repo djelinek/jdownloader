@@ -62,6 +62,9 @@
 		<systemPropertyVariables>
 		  <jetty.resourceBase>${project.basedir}/gradle/wrapper</jetty.resourceBase>
 		</systemPropertyVariables>
+		<environmentVariables>
+		  <JDOWNLOAD_CACHE></JDOWNLOAD_CACHE>
+		</environmentVariables>
 	      </configuration>
             </plugin>
 	    <plugin>
