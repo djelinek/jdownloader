@@ -18,7 +18,8 @@ public abstract class Hash {
 
 	public static final byte[] BUFFER = new byte[4 * (int) ONE_KB];
 
-	private String sum;
+	protected String sum;
+	protected String lastMatchingMessage;
 
 	/**
 	 * Create a new hash implementation with a given hash sum.
@@ -54,7 +55,18 @@ public abstract class Hash {
 			}
 		}
 		byte[] hash = messageDigest.digest();
-		return sum.equals(convertToHex(hash));
+		boolean result = sum.equals(convertToHex(hash));
+		lastMatchingMessage = "File '" + file.getAbsolutePath() + "' ";
+		if (result) {
+			lastMatchingMessage += "matches " + toString();
+		} else {
+			lastMatchingMessage += "doesn't match " + toString() + ", actual hash is '" + convertToHex(hash) + "'.";
+		}
+		return result;
+	}
+
+	public String getLastMatchingMessage() {
+		return lastMatchingMessage;
 	}
 
 	/**

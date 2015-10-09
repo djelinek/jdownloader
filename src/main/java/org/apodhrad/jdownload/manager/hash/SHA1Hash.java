@@ -29,4 +29,9 @@ public class SHA1Hash extends Hash {
 		return MESSAGE_DIGEST;
 	}
 
+	@Override
+	public String toString() {
+		return "SHA-1 " + sum;
+	}
+
 }

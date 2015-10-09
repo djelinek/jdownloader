@@ -29,4 +29,9 @@ public class SHA256Hash extends Hash {
 		return MESSAGE_DIGEST;
 	}
 
+	@Override
+	public String toString() {
+		return "SHA-256 " + sum;
+	}
+
 }

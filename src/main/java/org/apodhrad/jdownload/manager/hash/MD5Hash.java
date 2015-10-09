@@ -29,4 +29,9 @@ public class MD5Hash extends Hash {
 		return MESSAGE_DIGEST;
 	}
 
+	@Override
+	public String toString() {
+		return "MD5 " + sum;
+	}
+
 }

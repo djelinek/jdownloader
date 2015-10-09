@@ -263,7 +263,7 @@ public class JDownloadManager {
 		}
 
 		if (!hash.matches(targetFile)) {
-			throw new RuntimeException("File '" + targetFile.getAbsolutePath() + "' doesn't match '" + hash + "'");
+			throw new RuntimeException(hash.getLastMatchingMessage());
 		}
 
 		if (unpack) {
