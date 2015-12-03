@@ -1,7 +1,7 @@
-.gradle
+# Maven
+target/
+
+# Eclipse
 .classpath
 .project
-.settings
-build/
-bin/
-/target/
+.settings/

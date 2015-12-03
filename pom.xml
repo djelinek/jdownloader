@@ -1,114 +1,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apodhrad</groupId>
-	<artifactId>jdownload-manager</artifactId>
-	<packaging>jar</packaging>
-	<version>0.2.4-SNAPSHOT</version>
-	<name>.: JDownload Manager :.</name>
-	<url>https://github.com/apodhrad/jdownload-manager</url>
+	<groupId>org.apodhrad.jdownload</groupId>
+	<artifactId>jdownload-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>.: JDownload Parent :.</name>
+	<url>https://github.com/apodhrad/jdownload</url>
 
 	<distributionManagement>
-		<repository>
-			<id>bintray-apodhrad</id>
-			<name>jdownload-manager</name>
-			<url>https://api.bintray.com/maven/apodhrad/maven/jdownload-manager</url>
-		</repository>
+	  <repository>
+	    <id>bintray-apodhrad</id>
+	    <name>jdownload-manager</name>
+	    <url>https://api.bintray.com/maven/apodhrad/maven/jdownload</url>
+	  </repository>
 	</distributionManagement>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<version>1.3</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>9.2.2.v20140723</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.stefanbirkner</groupId>
-			<artifactId>system-rules</artifactId>
-			<version>1.6.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.rauschig</groupId>
-			<artifactId>jarchivelib</artifactId>
-			<version>0.7.1</version>
-		</dependency>
-	</dependencies>
+	<modules>
+	  <module>jdownload-manager</module>
+	  <module>jdownload-maven-plugin</module>
+	</modules>
 
 	<build>
 	  <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <version>2.18.1</version>
-	      <configuration>
-		<systemPropertyVariables>
-		  <jetty.resourceBase>${project.basedir}/gradle/wrapper</jetty.resourceBase>
-		</systemPropertyVariables>
-		<environmentVariables>
-		  <JDOWNLOAD_CACHE></JDOWNLOAD_CACHE>
-		</environmentVariables>
-	      </configuration>
-            </plugin>
 	    <plugin>
-	      <groupId>org.jacoco</groupId>
-	      <artifactId>jacoco-maven-plugin</artifactId>
-	      <version>0.7.6-SNAPSHOT</version>
-	      <executions>
-		<execution>
-		  <id>jacoco-initialize</id>
-		  <goals>
-		    <goal>prepare-agent</goal>
-		  </goals>
-		</execution>
-		<execution>
-		  <id>jacoco-site</id>
-		  <phase>package</phase>
-		  <goals>
-		    <goal>report</goal>
-		  </goals>
-		</execution>
-	      </executions>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+		<source>1.6</source>
+		<target>1.6</target>
+              </configuration>
 	    </plugin>
-            <plugin>
-              <artifactId>maven-source-plugin</artifactId>
-              <executions>
-		<execution>
-		  <id>attach-sources</id>
-		  <goals>
-                    <goal>jar</goal>
-		  </goals>
-		</execution>
-              </executions>
-            </plugin>
-            <plugin>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <executions>
-		<execution>
-		  <id>attach-javadocs</id>
-		  <goals>
-                    <goal>jar</goal>
-		  </goals>
-		</execution>
-              </executions>
-            </plugin>
 	  </plugins>
 	</build>
 
