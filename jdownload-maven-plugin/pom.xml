@@ -9,13 +9,24 @@
   <artifactId>jdownload-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>.: JDownload Maven Plugin :.</name>
+  
+  <properties>
+  <maven.version>3.1.1</maven.version>
+  <maven.test.version>3.1.0</maven.test.version>
+  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.0.5</version>
+      <version>${maven.version}</version>
     </dependency>
+    <dependency>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-compat</artifactId>
+      <version>${maven.version}</version>
+    <scope>test</scope>
+</dependency>
     <!-- dependencies to annotations -->
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
@@ -48,11 +59,17 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-testing</groupId>
+      <artifactId>maven-plugin-testing-harness</artifactId>
+      <version>${maven.test.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   
   <build>
     <plugins>
-      <plugin>
+       <plugin>
 	<artifactId>maven-plugin-plugin</artifactId>
 	<configuration>
 	  <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
@@ -65,13 +82,13 @@
 	      <goal>descriptor</goal>
 	    </goals>
 	  </execution>
-	  <!-- if you want to generate help goal -->
+	  <!-- if you want to generate help goal >
 	  <execution>
 	    <id>help-goal</id>
 	    <goals>
 	      <goal>helpmojo</goal>
 	    </goals>
-	  </execution>
+	  </execution-->
 	</executions>
       </plugin>
       <plugin>
@@ -96,56 +113,6 @@
 	  </execution>
         </executions>
       </plugin>
-       <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <configuration>
-       <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
-       <skip>true</skip>
-          <systemPropertyVariables>
-            <maven.home>${maven.home}</maven.home>
-	    <project.build.directory>${project.build.directory}</project.build.directory>
-	    <org.slf4j.simpleLogger.defaultLogLevel>debug</org.slf4j.simpleLogger.defaultLogLevel>
-	    <jdownload.version>${project.version}</jdownload.version>
-          </systemPropertyVariables>
-    </configuration>
-    <executions>
-       <execution>
-          <id>unit-tests</id>
-          <phase>test</phase>
-          <goals>
-             <goal>test</goal>
-          </goals>
-          <configuration>
-                <!-- Never skip running the tests when the test phase is invoked -->
-                <skip>false</skip>
-             <includes>
-                   <!-- Include unit tests within integration-test phase. -->
-                <include>**/*Test.java</include>
-             </includes>
-             <excludes>
-               <!-- Exclude integration tests within (unit) test phase. -->
-                <exclude>**/*IntegrationTest.java</exclude>
-            </excludes>
-          </configuration>
-       </execution>
-       <execution>
-          <id>integration-tests</id>
-          <phase>integration-test</phase>
-          <goals>
-             <goal>test</goal>
-          </goals>
-          <configuration>
-            <!-- Never skip running the tests when the integration-test phase is invoked -->
-             <skip>false</skip>
-             <includes>
-               <!-- Include integration tests within integration-test phase. -->
-               <include>**/*IntegrationTest.java</include>
-             </includes>
-          </configuration>
-       </execution>
-    </executions>
-  </plugin>
     </plugins>
   </build>
 
