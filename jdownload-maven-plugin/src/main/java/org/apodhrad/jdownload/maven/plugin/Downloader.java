@@ -70,11 +70,10 @@ public class Downloader extends AbstractMojo {
 	private String sha256;
 
 	public void execute() throws MojoExecutionException {
-		getLog().info("*** " + url + " ***");
-		getLog().info("*** " + url.getPath() + " ***");
 		if (skip) {
 			getLog().info("Downloading " + url + " is skipped.");
 		}
+		getLog().info("Downloading " + url + " has started");
 		if (useCache) {
 			System.setProperty(JDownloadManager.NOCACHE_PROPERTY, "true");
 		}
@@ -111,7 +110,7 @@ public class Downloader extends AbstractMojo {
 			throw new MojoExecutionException("I/O exception occured during downloading " + url.getPath(), ioe);
 		}
 
-		getLog().info("Finished");
+		getLog().info("Downloading has finished");
 	}
 
 	private static boolean isDefined(Object parameter) {
