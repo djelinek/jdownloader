@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apodhrad.jeclipse.maven.plugin.test</groupId>
+  <artifactId>download-urlhash-test</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  
+  <build>
+    <plugins>
+      <plugin>
+	<groupId>org.apodhrad.jdownload</groupId>
+	<artifactId>jdownload-maven-plugin</artifactId>
+	<version>${jdownload.version}</version>
+	<configuration>
+	  <url>http://www.apache.org/dist/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.zip</url>
+	  <md5>http://www.apache.org/dist/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.zip.md5</md5>
+	</configuration>
+	<executions>
+	  <execution>
+	    <id>download-maven</id>
+	    <goals>
+	      <goal>download</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

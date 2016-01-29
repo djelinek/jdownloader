@@ -2,6 +2,7 @@ package org.apodhrad.jdownload.manager;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import org.apodhrad.jdownload.manager.hash.MD5Hash;
 import org.apodhrad.jdownload.manager.hash.NullHash;
 import org.apodhrad.jdownload.manager.hash.SHA1Hash;
 import org.apodhrad.jdownload.manager.hash.SHA256Hash;
+import org.apodhrad.jdownload.manager.hash.URLHash;
 import org.junit.Test;
 
 /**
@@ -19,7 +21,7 @@ import org.junit.Test;
  */
 public class HashTest {
 
-	private static final String JETTY_RESOURCE_BASE = System.getProperty("jetty.resourceBase");
+	private static final String JETTY_RESOURCE_BASE = System.getProperty("jetty.resourceBase", "src/test/resources");
 	private static final String TEST_RESOURCE = "gradle-wrapper.jar";
 
 	@Test
@@ -63,4 +65,48 @@ public class HashTest {
 		File file = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE);
 		assertTrue(new NullHash().matches(file));
 	}
+
+	@Test
+	public void urlMd5HashTest() throws IOException {
+		File file = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE);
+		File hashFile = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE + ".md5");
+		assertTrue(new URLHash("file://" + hashFile.getAbsolutePath()).matches(file));
+	}
+
+	@Test
+	public void urlSha1HashTest() throws IOException {
+		File file = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE);
+		File hashFile = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE + ".sha1");
+		assertTrue(new URLHash("file://" + hashFile.getAbsolutePath()).matches(file));
+	}
+
+	@Test
+	public void urlSha256HashTest() throws IOException {
+		File file = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE);
+		File hashFile = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE + ".sha256");
+		assertTrue(new URLHash("file://" + hashFile.getAbsolutePath()).matches(file));
+	}
+
+	@Test
+	public void urlMalformedHashTest() throws IOException {
+		File hashFile = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE + ".md5");
+		try {
+			new URLHash("fil://" + hashFile.getAbsolutePath());
+		} catch (IllegalArgumentException e) {
+			return;
+		}
+		fail("Malformed URL wasn't detected");
+	}
+	
+	@Test
+	public void urlUnexistingHashTest() throws IOException {
+		File hashFile = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE + ".foo");
+		try {
+			new URLHash("file://" + hashFile.getAbsolutePath());
+		} catch (IllegalArgumentException e) {
+			return;
+		}
+		fail("Nonexisting URL wasn't detected");
+	}
+
 }

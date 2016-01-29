@@ -2,6 +2,7 @@ package org.apodhrad.jdownload.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.maven.execution.MavenSession;
@@ -17,8 +18,7 @@ import org.apodhrad.jdownload.manager.JDownloadManager;
 import org.apodhrad.jdownload.manager.hash.Hash;
 import org.apodhrad.jdownload.manager.hash.MD5Hash;
 import org.apodhrad.jdownload.manager.hash.NullHash;
-import org.apodhrad.jdownload.manager.hash.SHA1Hash;
-import org.apodhrad.jdownload.manager.hash.SHA256Hash;
+import org.apodhrad.jdownload.manager.hash.URLHash;
 
 /**
  * 
@@ -91,13 +91,13 @@ public class Downloader extends AbstractMojo {
 
 		Hash hash = new NullHash();
 		if (isDefined(md5)) {
-			hash = new MD5Hash(md5);
+			hash = isUrlHash(md5) ? new URLHash(md5) : new MD5Hash(md5);
 		}
 		if (isDefined(sha1)) {
-			hash = new SHA1Hash(sha1);
+			hash = isUrlHash(sha1) ? new URLHash(sha1) : new MD5Hash(sha1);
 		}
 		if (isDefined(sha256)) {
-			hash = new SHA256Hash(sha256);
+			hash = isUrlHash(sha256) ? new URLHash(sha256) : new MD5Hash(sha256);
 		}
 
 		if (!isDefined(outpuDirectory)) {
@@ -115,6 +115,15 @@ public class Downloader extends AbstractMojo {
 
 	private static boolean isDefined(Object parameter) {
 		return parameter != null && parameter.toString().length() > 0;
+	}
+	
+	private static boolean isUrlHash(String url) {
+		try {
+			new URL(url);
+		} catch (MalformedURLException e) {
+			return false;
+		}
+		return true;
 	}
 
 }
