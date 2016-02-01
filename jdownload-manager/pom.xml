@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.apodhrad.jdownload</groupId>
     <artifactId>jdownload-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
   <artifactId>jdownload-manager</artifactId>
   <packaging>jar</packaging>
