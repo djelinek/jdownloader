@@ -37,7 +37,7 @@ public class JDownloadManagerTest {
 	private static final String RESOURCE_DIR = JDownloadManagerTest.class.getResource("/").getPath();
 	private static final File CACHE_DIR = new java.io.File(RESOURCE_DIR, "cache");
 	private static final File TARGET_DIR = new java.io.File(RESOURCE_DIR, "target");
-	private static final String MAVEN3_URL = "http://mirror.hosting90.cz/apache/maven/maven-3";
+	private static final String MAVEN3_URL = "http://www.apache.org/dist/maven/maven-3";
 
 	private static Server server;
 
