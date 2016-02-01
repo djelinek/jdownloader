@@ -5,8 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Calendar;
 
 /**
@@ -25,17 +25,13 @@ public class DownloadUtils {
 		long lastTime = Calendar.getInstance().getTimeInMillis();
 
 		System.out.println("Downloading '" + url + "' to '" + targetFile.getAbsolutePath() + "'");
-		HttpURLConnection connection = null;
-		connection = (HttpURLConnection) new URL(url).openConnection();
+		URLConnection connection = null;
+		connection = new URL(url).openConnection();
 
 		InputStream input = null;
 		OutputStream output = null;
 		try {
 			connection.connect();
-			// Check if the request is handled successfully
-			if (connection.getResponseCode() / 100 != 2) {
-				throw new RuntimeException("No file available at '" + url + "'");
-			}
 			int totalSize = connection.getContentLength();
 			input = connection.getInputStream();
 			output = new FileOutputStream(targetFile);
@@ -59,7 +55,6 @@ public class DownloadUtils {
 				output.flush();
 				output.close();
 			}
-			connection.disconnect();
 		}
 	}
 

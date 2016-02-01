@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apodhrad.jdownload.manager.util.DownloadUtils;
@@ -23,7 +24,7 @@ import org.junit.Test;
 public class DownloadUtilsTest {
 
 	private static final int JETTY_SERVER_PORT = 8180;
-	private static final String JETTY_RESOURCE_BASE = System.getProperty("jetty.resourceBase");
+	private static final String JETTY_RESOURCE_BASE = System.getProperty("jetty.resourceBase", "src/test/resources");
 	private static final String TEST_RESOURCE = "gradle-wrapper.jar";
 	private static final String RESOURCE_DIR = DownloadUtilsTest.class.getResource("/").getPath();
 	private static final File TARGET_DIR = new File(RESOURCE_DIR, "target");
@@ -77,8 +78,24 @@ public class DownloadUtilsTest {
 		assertTrue(new File(TARGET_DIR, "test.jar").isFile());
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = FileNotFoundException.class)
 	public void downloadNonExistingResourceTest() throws Exception {
 		DownloadUtils.download("http://localhost:8180/test.jar", TARGET_DIR);
 	}
+
+	@Test
+	public void downloadLocalFileTest() throws Exception {
+		File localFile = new File("src/test/resources", TEST_RESOURCE);
+		DownloadUtils.download("file://" + localFile.getAbsolutePath(), new File(TARGET_DIR, "test.jar"));
+
+		assertTrue(new File(TARGET_DIR, "test.jar").exists());
+		assertTrue(new File(TARGET_DIR, "test.jar").isFile());
+	}
+
+	@Test(expected = FileNotFoundException.class)
+	public void downloadNonExistingLocalFileTest() throws Exception {
+		File localFile = new File("src/test/resources", "test.jar");
+		DownloadUtils.download("file://" + localFile.getAbsolutePath(), new File(TARGET_DIR, "test.jar"));
+	}
+
 }
