@@ -23,6 +23,7 @@ public class DownloadUtils {
 	public static final byte[] BUFFER = new byte[4 * 1024];
 
 	private static Logger log = LoggerFactory.getLogger(DownloadUtils.class);
+	private static int progressTime = 10000;
 
 	public static void download(String url, File targetFile) throws IOException {
 		UnpackUtils.createDir(targetFile.getParentFile());
@@ -46,7 +47,7 @@ public class DownloadUtils {
 				output.write(BUFFER, 0, read);
 				count += read;
 				long currentTime = Calendar.getInstance().getTimeInMillis();
-				if (currentTime - lastTime > 1000) {
+				if (currentTime - lastTime > progressTime) {
 					lastTime = currentTime;
 					printStatus(count, totalSize);
 				}
@@ -71,6 +72,10 @@ public class DownloadUtils {
 	public static String getName(String url) {
 		String[] parser = url.split("/");
 		return parser[parser.length - 1];
+	}
+	
+	public static void setProgressTime(int miliSeconds) {
+		progressTime = miliSeconds;
 	}
 
 }
