@@ -64,8 +64,8 @@ public class DownloadUtils {
 	}
 
 	protected static void printStatus(int currentSize, int totalSize) {
-		float ratio = currentSize / totalSize * 100;
-		log.info(String.format("Downloaded %10d / %10d (%2.0f%%)", currentSize, totalSize, ratio));
+		float ratio = 100f * currentSize / totalSize;
+		log.info(String.format("Downloaded %10d / %10d (%3.0f%%)", currentSize, totalSize, ratio));
 	}
 
 	public static String getName(String url) {
