@@ -55,7 +55,7 @@ public class Downloader extends AbstractMojo {
 	private String cache;
 
 	@Parameter(defaultValue = "false")
-	private boolean useCache;
+	private boolean noCache;
 
 	@Parameter(defaultValue = "false")
 	private boolean skip;
@@ -74,7 +74,7 @@ public class Downloader extends AbstractMojo {
 			getLog().info("Downloading " + url + " is skipped.");
 		}
 		getLog().info("Downloading " + url + " has started");
-		if (useCache) {
+		if (noCache) {
 			System.setProperty(JDownloadManager.NOCACHE_PROPERTY, "true");
 		}
 		if (isDefined(cache)) {

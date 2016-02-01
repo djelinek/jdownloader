@@ -13,7 +13,8 @@
 	<artifactId>jdownload-maven-plugin</artifactId>
 	<version>${jdownload.version}</version>
 	<configuration>
-	  <url>http://mirror.hosting90.cz/apache/maven/maven-3/3.3.1/binaries/apache-maven-3.3.1-bin.zip</url>
+	  <url>http://www.apache.org/dist/maven/maven-3/3.3.1/binaries/apache-maven-3.3.1-bin.zip</url>
+	  <noCache>true</noCache>
 	</configuration>
 	<executions>
 	  <execution>
