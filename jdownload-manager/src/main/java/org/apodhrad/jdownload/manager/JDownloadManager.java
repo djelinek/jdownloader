@@ -9,6 +9,8 @@ import org.apodhrad.jdownload.manager.hash.Hash;
 import org.apodhrad.jdownload.manager.hash.NullHash;
 import org.apodhrad.jdownload.manager.util.DownloadUtils;
 import org.apodhrad.jdownload.manager.util.UnpackUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JDownload manager is a cache-managed download manager.
@@ -25,6 +27,8 @@ public class JDownloadManager {
 	public static final String CACHE_VARIABLE = "JDOWNLOAD_CACHE";
 
 	public static final String NOCACHE_PROPERTY = "jdownload.nocache";
+	
+	private static Logger log = LoggerFactory.getLogger(JDownloadManager.class);
 
 	private File cache;
 
@@ -248,7 +252,7 @@ public class JDownloadManager {
 
 		File targetFile = new File(target, targetName);
 		if (targetFile.exists() && hash.matches(targetFile)) {
-			System.out.println("File '" + targetName + "' already exists in " + target);
+			log.info("File '" + targetName + "' already exists in " + target);
 			return targetFile;
 		}
 

@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.rauschig.jarchivelib.ArchiverFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility for extracting archives.
@@ -14,13 +16,15 @@ import org.rauschig.jarchivelib.ArchiverFactory;
  */
 public class UnpackUtils extends FileUtils {
 
+	private static Logger log = LoggerFactory.getLogger(UnpackUtils.class);
+
 	public static void unpack(String file, String target) throws IOException {
 		unpack(new File(file), new File(target));
 	}
 
 	public static void unpack(File file, File target) throws IOException {
 		createDir(target);
-		System.out.println("Unpacking file '" + file.getAbsolutePath() + "' to '" + target.getAbsolutePath() + "'");
+		log.info("Unpacking file '" + file.getAbsolutePath() + "' to '" + target.getAbsolutePath() + "'");
 		ArchiverFactory.createArchiver(file).extract(file, target);
 	}
 
@@ -30,7 +34,7 @@ public class UnpackUtils extends FileUtils {
 
 	public static void createDir(File dir) {
 		if (dir.mkdirs()) {
-			System.out.println("Creating dir '" + dir + "'");
+			log.info("Creating dir '" + dir + "'");
 		}
 	}
 }

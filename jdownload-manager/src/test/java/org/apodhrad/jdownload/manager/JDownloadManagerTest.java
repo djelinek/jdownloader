@@ -86,8 +86,9 @@ public class JDownloadManagerTest {
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
 		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).isFile());
 
-		String expectedOutput = "Downloading '" + JETTY_TEST_RESOURCE_URL + "' to '"
-				+ new File(CACHE_DIR, TEST_RESOURCE).getAbsolutePath() + "'\n"
+		String log = "INFO  o.a.j.manager.util.DownloadUtils - ";
+		String expectedOutput = log + "Downloading '" + JETTY_TEST_RESOURCE_URL + "' to '"
+				+ new File(CACHE_DIR, TEST_RESOURCE).getAbsolutePath() + "'\n" + log
 				+ "Downloaded      51348 /      51348 (100%)\n";
 		assertEquals(expectedOutput, out.getLog());
 	}

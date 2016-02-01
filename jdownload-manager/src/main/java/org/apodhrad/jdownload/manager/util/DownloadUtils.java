@@ -9,6 +9,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A utility for downloading a file.
  * 
@@ -19,12 +22,14 @@ public class DownloadUtils {
 
 	public static final byte[] BUFFER = new byte[4 * 1024];
 
+	private static Logger log = LoggerFactory.getLogger(DownloadUtils.class);
+
 	public static void download(String url, File targetFile) throws IOException {
 		UnpackUtils.createDir(targetFile.getParentFile());
 
 		long lastTime = Calendar.getInstance().getTimeInMillis();
 
-		System.out.println("Downloading '" + url + "' to '" + targetFile.getAbsolutePath() + "'");
+		log.info("Downloading '" + url + "' to '" + targetFile.getAbsolutePath() + "'");
 		URLConnection connection = null;
 		connection = new URL(url).openConnection();
 
@@ -46,7 +51,7 @@ public class DownloadUtils {
 					printStatus(count, totalSize);
 				}
 			}
-			printStatus(count, totalSize, '\n');
+			printStatus(count, totalSize);
 		} finally {
 			if (input != null) {
 				input.close();
@@ -59,12 +64,8 @@ public class DownloadUtils {
 	}
 
 	protected static void printStatus(int currentSize, int totalSize) {
-		printStatus(currentSize, totalSize, '\r');
-	}
-
-	protected static void printStatus(int currentSize, int totalSize, char c) {
-		float percentage = currentSize / totalSize * 100;
-		System.out.printf("Downloaded %10d / %10d (%2.0f%%)" + c, currentSize, totalSize, percentage);
+		float ratio = currentSize / totalSize * 100;
+		log.info(String.format("Downloaded %10d / %10d (%2.0f%%)", currentSize, totalSize, ratio));
 	}
 
 	public static String getName(String url) {
