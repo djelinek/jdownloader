@@ -5,7 +5,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import org.apodhrad.jdownload.manager.hash.MD5Hash;
 import org.apodhrad.jdownload.manager.hash.NullHash;
@@ -92,18 +94,20 @@ public class HashTest {
 		File hashFile = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE + ".md5");
 		try {
 			new URLHash("fil://" + hashFile.getAbsolutePath());
-		} catch (IllegalArgumentException e) {
+		} catch (JDownloadManagerException e) {
+			assertTrue("Expected MalformedURLException", e.getCause() instanceof MalformedURLException);
 			return;
 		}
 		fail("Malformed URL wasn't detected");
 	}
-	
+
 	@Test
 	public void urlUnexistingHashTest() throws IOException {
 		File hashFile = new File(JETTY_RESOURCE_BASE, TEST_RESOURCE + ".foo");
 		try {
 			new URLHash("file://" + hashFile.getAbsolutePath());
-		} catch (IllegalArgumentException e) {
+		} catch (JDownloadManagerException e) {
+			assertTrue("Expected FileNotFoundException", e.getCause() instanceof FileNotFoundException);
 			return;
 		}
 		fail("Nonexisting URL wasn't detected");

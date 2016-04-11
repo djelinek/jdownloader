@@ -4,9 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
+
+import org.apodhrad.jdownload.manager.JDownloadManagerException;
 
 /**
  * URL hash implementation.
@@ -16,10 +17,12 @@ import java.security.MessageDigest;
  */
 public class URLHash extends Hash {
 
+	public static final int NUMBER_OF_RETRIES = 5;
+
 	private Hash hash;
 
 	public URLHash(String url) {
-		super(getHashSumFromUrl(url));
+		super(getHashSumFromUrl(url, NUMBER_OF_RETRIES));
 		if (url.toLowerCase().endsWith("md5")) {
 			hash = new MD5Hash(sum);
 		} else if (url.toLowerCase().endsWith("sha1")) {
@@ -31,16 +34,32 @@ public class URLHash extends Hash {
 		}
 	}
 
-	private static String getHashSumFromUrl(String url) {
+	private static String getHashSumFromUrl(String url, int numberOfRetries) {
+		Exception exception = null;
+		String sum = null;
+		int count = 0;
+		while (sum == null) {
+			if (count++ > numberOfRetries) {
+				throw new JDownloadManagerException(
+						"Cannot get hash sum from " + url + " after " + numberOfRetries + " retries", exception);
+			}
+			try {
+				sum = getHashSumFromUrl(url);
+			} catch (Exception e) {
+				exception = e;
+			}
+		}
+		return sum;
+	}
+
+	private static String getHashSumFromUrl(String url) throws IOException {
 		BufferedReader in = null;
 		String sum = null;
 		try {
 			in = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
 			sum = in.readLine();
-		} catch (MalformedURLException e) {
-			throw new IllegalArgumentException("Cannot get hash sum from " + url, e);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("Cannot get hash sum from " + url, e);
+		} catch (IOException ioe) {
+			throw ioe;
 		} finally {
 			if (in != null) {
 				try {
@@ -71,10 +90,6 @@ public class URLHash extends Hash {
 	@Override
 	public String toString() {
 		return hash.toString();
-	}
-
-	public static void main(String[] args) throws Exception {
-		new URL("asf56g7df68g7s7g");
 	}
 
 }
