@@ -105,6 +105,20 @@ public class JDownloadManagerTest {
 		assertTrue(new File(TARGET_DIR, "META-INF").exists());
 		assertTrue(new File(TARGET_DIR, "META-INF").isDirectory());
 	}
+	
+	@Test
+	public void downloadExistingUnpackTest() throws Exception {
+		JDownloadManager manager = new JDownloadManager(CACHE_DIR);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, false);
+		manager.download(JETTY_TEST_RESOURCE_URL, TARGET_DIR, true);
+
+		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).exists());
+		assertTrue(new File(CACHE_DIR, TEST_RESOURCE).isFile());
+		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).exists());
+		assertTrue(new File(TARGET_DIR, TEST_RESOURCE).isFile());
+		assertTrue(new File(TARGET_DIR, "META-INF").exists());
+		assertTrue(new File(TARGET_DIR, "META-INF").isDirectory());
+	}
 
 	@Test
 	public void downloadTargetExistingResourceTest() throws Exception {

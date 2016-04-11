@@ -253,10 +253,7 @@ public class JDownloadManager {
 		File targetFile = new File(target, targetName);
 		if (targetFile.exists() && hash.matches(targetFile)) {
 			log.info("File '" + targetName + "' already exists in " + target);
-			return targetFile;
-		}
-
-		if (isCacheManaged()) {
+		} else if (isCacheManaged()) {
 			File cacheFile = new File(getCache(), targetName);
 			if (!cacheFile.exists() || !hash.matches(cacheFile)) {
 				DownloadUtils.download(url, cacheFile);
