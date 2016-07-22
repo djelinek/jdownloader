@@ -46,7 +46,7 @@ public class Downloader extends AbstractMojo {
 	private URL url;
 
 	@Parameter
-	private File outpuDirectory;
+	private File outputDirectory;
 
 	@Parameter(defaultValue = "false")
 	private boolean unpack;
@@ -100,12 +100,12 @@ public class Downloader extends AbstractMojo {
 			hash = isUrlHash(sha256) ? new URLHash(sha256) : new MD5Hash(sha256);
 		}
 
-		if (!isDefined(outpuDirectory)) {
-			outpuDirectory = new File(target);
+		if (!isDefined(outputDirectory)) {
+			outputDirectory = new File(target);
 		}
 
 		try {
-			jDownloadManager.download(url.toString(), outpuDirectory, unpack, hash);
+			jDownloadManager.download(url.toString(), outputDirectory, unpack, hash);
 		} catch (IOException ioe) {
 			throw new MojoExecutionException("I/O exception occured during downloading " + url.getPath(), ioe);
 		}

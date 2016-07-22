@@ -13,8 +13,8 @@
 	<artifactId>jdownload-maven-plugin</artifactId>
 	<version>${jdownload.version}</version>
 	<configuration>
-	  <url>http://www.apache.org/dist/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.zip</url>
-	  <md5>http://www.apache.org/dist/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.zip.md5</md5>
+	  <url>https://archive.apache.org/dist/maven/maven-3/3.3.1/binaries/apache-maven-3.3.1-bin.zip</url>
+	  <md5>https://archive.apache.org/dist/maven/maven-3/3.3.1/binaries/apache-maven-3.3.1-bin.zip.md5</md5>
 	</configuration>
 	<executions>
 	  <execution>
