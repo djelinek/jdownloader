@@ -4,7 +4,7 @@
 	<groupId>org.apodhrad.jdownload</groupId>
 	<artifactId>jdownload-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.3</version>
 	<name>.: JDownload Parent :.</name>
 	<url>https://github.com/apodhrad/jdownload</url>
 
