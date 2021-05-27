@@ -4,15 +4,15 @@
 	<groupId>org.apodhrad.jdownload</groupId>
 	<artifactId>jdownload-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.4</version>
 	<name>.: JDownload Parent :.</name>
 	<url>https://github.com/apodhrad/jdownload</url>
 
 	<distributionManagement>
 	  <repository>
-	    <id>bintray-apodhrad</id>
-	    <name>jdownload-manager</name>
-	    <url>https://api.bintray.com/maven/apodhrad/maven/jdownload</url>
+		<id>fusetools-qe-repo</id>
+		<name>jdownload-manager</name>
+		<url>http://nexus.fuse-qe.eng.rdu2.redhat.com/repository/fusetools-qe-repo/</url>
 	  </repository>
 	</distributionManagement>
 
